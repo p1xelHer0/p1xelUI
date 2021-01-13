@@ -35,7 +35,7 @@ local function Nameplates()
         end
     end)
 
-    C_NamePlate.SetNamePlateFriendlySize(100, 30)
+    C_NamePlate.SetNamePlateFriendlySize(60, 30)
     SetCVar("nameplateOccludedAlphaMult", 1)
 end
 
@@ -51,7 +51,7 @@ local function ActionBars()
     end)
 
     ActionButton1:ClearAllPoints()
-    ActionButton1:SetPoint('BOTTOM', _G[CurrentElement .. "Background"], -314, 100)
+    ActionButton1:SetPoint('BOTTOM', _G[CurrentElement .. "Background"], -314, 60)
 
     CurrentElement = "MultiBarBottomRight"
     _G[CurrentElement .. "Button7"]:SetPoint("BOTTOMLEFT", _G[CurrentElement .. "Button1"], "TOPLEFT", 0, 10)
@@ -65,6 +65,7 @@ local function ActionBars()
     CurrentElement = "MultiBarBottomLeft"
     _G[CurrentElement .. "Button1"]:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 10)
     UIPARENT_MANAGED_FRAME_POSITIONS[CurrentElement].xOffset = 6
+
     MainMenuBar.GetYOffset = function()
         return -30
     end
@@ -73,11 +74,20 @@ local function ActionBars()
 
     MicroButtonAndBagsBar:Hide()
     CharacterMicroButton:ClearAllPoints()
-    CharacterMicroButton:SetPoint("TOPLEFT", "MainMenuBar", -637, 14)
+    CharacterMicroButton:SetPoint("BOTTOM", "MainMenuBar", "CENTER", -130, 0)
+
+    local lowAlpha = {CharacterMicroButton, SpellbookMicroButton, TalentMicroButton, AchievementMicroButton,
+                      QuestLogMicroButton, GuildMicroButton, LFDMicroButton, CollectionsMicroButton, EJMicroButton,
+                      StoreMicroButton, MainMenuMicroButton}
+
+    for _, element in pairs(lowAlpha) do
+        element:SetAlpha(0)
+    end
+
     CharacterMicroButton.SetPoint = function()
     end
 
-    -- hide actionbar text
+    -- Hide ActionBar text
     for i = 1, 12 do
         _G["ActionButton" .. i .. "HotKey"]:SetAlpha(0)
         _G["ActionButton" .. i .. "Name"]:SetAlpha(0)
@@ -94,32 +104,41 @@ local function ActionBars()
         _G["MultiBarLeftButton" .. i .. "HotKey"]:SetAlpha(0)
         _G["MultiBarLeftButton" .. i .. "Name"]:SetAlpha(0)
     end
+
+    _G["MultiBarBottomRightButton5"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton6"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton11"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton12"]:SetAlpha(0)
 end
 
 local function UnitFrames()
     local ToTX = -108
     local ToTY = 13
 
-    local elementsToHide = {PlayerFrame.name, PlayerLevelText}
+    local frameScale = 1.1
+    local castbarScale = 1.35
 
+    local elementsToHide = {PlayerFrame.name, PlayerPrestigeBadge, PlayerPrestigePortrait, PlayerPVPIcon,
+                            TargetFrame.name, TargetFrameTextureFramePVPIcon, TargetFrameTextureFramePrestigeBadge,
+                            TargetFrameTextureFramePrestigePortrait, FocusFrameTextureFramePVPIcon,
+                            FocusFrameTextureFramePrestigeBadge, FocusFrameTextureFramePrestigePortrait}
+
+    -- Player
     PlayerFrame:ClearAllPoints()
-    PlayerFrame:SetPoint("LEFT", 200, 200)
+    PlayerFrame:SetPoint("CENTER", -500, 200)
+    PlayerFrame:SetScale(frameScale)
     PlayerFrame.SetPoint = function()
     end
 
+    -- Target
     TargetFrame:ClearAllPoints()
     TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
-    TargetFrameSpellBar:SetScale(1.1)
-
-    for _, element in pairs(elementsToHide) do
-        hooksecurefunc(element, "Show", function(s)
-            s:Hide()
-        end)
-
-        element:Show()
-    end
+    TargetFrame:SetScale(frameScale)
+    TargetFrameSpellBar:SetScale(castbarScale)
     TargetFrame.SetPoint = function()
     end
+
+    -- Target Hide
 
     TargetFrameToT:ClearAllPoints()
     TargetFrameToT:SetPoint("LEFT", TargetFrame, "BOTTOMRIGHT", ToTX, ToTY)
@@ -128,7 +147,8 @@ local function UnitFrames()
 
     FocusFrame:ClearAllPoints()
     FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -100)
-    FocusFrameSpellBar:SetScale(1.1)
+    FocusFrame:SetScale(frameScale)
+    FocusFrameSpellBar:SetScale(castbarScale)
     FocusFrame.SetPoint = function()
     end
 
@@ -137,15 +157,25 @@ local function UnitFrames()
     FocusFrameToT.SetPoint = function()
     end
 
+    -- Hide elements
+    for _, element in pairs(elementsToHide) do
+        hooksecurefunc(element, "Show", function(s)
+            s:Hide()
+        end)
+
+        element:Show()
+    end
 end
 
 local function Buffs()
     local function MoveBuffs()
         BuffFrame:ClearAllPoints()
-        BuffFrame:SetPoint("TOPRIGHT", -250, -100)
+        BuffFrame:SetPoint("TOP", 500, -120)
+	    BuffFrame:SetScale(1.3)
     end
 
     hooksecurefunc("UIParent_UpdateTopFramePositions", MoveBuffs)
+    MoveBuffs()
 end
 
 local function ClassColorHealthBars()
@@ -310,6 +340,7 @@ function Addon:Load()
     MinimapCleanup()
     Buffs()
     ActionBars()
+    Nameplates()
     UnitFrames()
     ClassColorHealthBars()
     UniframeBackgroundColor()
@@ -318,6 +349,9 @@ function Addon:Load()
 
     -- Too bright
     ConsoleExec("ffxglow 0")
+
+    -- Scale
+    SetCVar("UIScale", 0.75)
 
     -- Damage: 3,123 -> 3123
     SetCVar('BreakUpLargeNumbers', 0)
@@ -332,9 +366,6 @@ function Addon:Load()
 
     -- Chat alert bell
     QuickJoinToastButton:SetAlpha(0)
-
-    -- Small Friendly Nameplates
-    C_NamePlate.SetNamePlateFriendlySize(60, 60)
 
     -- Prestige Icons
     PlayerPrestigeBadge:SetAlpha(0)
