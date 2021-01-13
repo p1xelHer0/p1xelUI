@@ -11,7 +11,7 @@ local ReloadUI = ReloadUI
 local LSM = LibStub("LibSharedMedia-3.0")
 
 
-function init()
+local function init()
     -- too bright
     ConsoleExec("ffxglow 0")
 
