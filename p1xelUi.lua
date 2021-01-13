@@ -21,6 +21,24 @@ local function MinimapCleanup()
     MiniMapTracking:Hide()
 end
 
+local function Nameplates()
+    local U = UnitIsUnit
+    hooksecurefunc("CompactUnitFrame_UpdateName", function(nameplate)
+        if IsActiveBattlefieldArena() and nameplate.unit:find("nameplate") then
+            for i = 1, 5 do
+                if U(nameplate.unit, "arena" .. i) then
+                    nameplate.name:SetText(i)
+                    nameplate.name:SetTextColor(1, 1, 0)
+                    break
+                end
+            end
+        end
+    end)
+
+    C_NamePlate.SetNamePlateFriendlySize(100, 30)
+    SetCVar("nameplateOccludedAlphaMult", 1)
+end
+
 local function ActionBars()
     local CurrentElement = "MainMenuBarArtFrame"
     _G[CurrentElement .. "Background"]:Hide()
@@ -91,6 +109,7 @@ local function UnitFrames()
 
     TargetFrame:ClearAllPoints()
     TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
+    TargetFrameSpellBar:SetScale(1.1)
 
     for _, element in pairs(elementsToHide) do
         hooksecurefunc(element, "Show", function(s)
@@ -109,6 +128,7 @@ local function UnitFrames()
 
     FocusFrame:ClearAllPoints()
     FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -100)
+    FocusFrameSpellBar:SetScale(1.1)
     FocusFrame.SetPoint = function()
     end
 
@@ -338,4 +358,9 @@ function Addon:Load()
     end)
 end
 
-Addon:Load()
+local main = CreateFrame("Frame")
+main:RegisterEvent("PLAYER_ENTERING_WORLD")
+main:SetScript("OnEvent", function(self)
+    Addon:Load()
+    self:UnregisterAllEvents()
+end)
