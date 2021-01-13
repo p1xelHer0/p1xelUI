@@ -1,0 +1,227 @@
+local AddonName, Addon = ...
+
+local function MinimapCleanup ()
+  MinimapZoomIn:Hide()
+  MinimapZoomOut:Hide()
+  MiniMapWorldMapButton:Hide()
+  --[[
+  MinimapBackdrop:Hide()
+  MinimapBorder:Hide()
+  MiniMapRecordingButton:Hide()
+  MinimapBorderTop:Hide()
+  MinimapZoneText:Hide()
+  ]]--
+  Minimap:EnableMouseWheel(true)
+  Minimap:SetScript('OnMouseWheel', function (self, delta)
+    if delta > 0 then
+      Minimap_ZoomIn()
+    else
+      Minimap_ZoomOut()
+    end
+  end)
+  MiniMapTracking:Hide()
+end
+
+local function ClassColorHealthBars ()
+  local function ClassColor (statusbar, unit)
+    local _, class, c
+    
+    if UnitIsPlayer(unit) 
+    and UnitIsConnected(unit) 
+    and unit == statusbar.unit 
+    and UnitClass(unit) then
+      _, class = UnitClass(unit)
+      
+      c = CUSTOM_CLASS_COLORS 
+      and CUSTOM_CLASS_COLORS[class] 
+      or RAID_CLASS_COLORS[class]
+      
+      statusbar:SetStatusBarColor(c.r, c.g, c.b)
+      PlayerFrameHealthBar:SetStatusBarColor(0, 1, 0)
+    end
+  end
+
+  hooksecurefunc("UnitFrameHealthBar_Update", ClassColor)
+  hooksecurefunc("HealthBar_OnValueChanged", function (self)
+    ClassColor(self, self.unit)
+  end)
+end
+
+function Addon:Load ()
+  MinimapCleanup()
+  ClassColorHealthBars()
+
+    -- Too bright
+    ConsoleExec("ffxglow 0")
+
+    -- Damage: 3,123 -> 3123
+    SetCVar('BreakUpLargeNumbers', 0)
+
+    SetCVar("SHOW_ARENA_ENEMY_FRAMES_TEXT", 1)
+    SetCVar("ShowArenaEnemyFrames", 1)
+
+    -- PvP Icons
+    PlayerPVPIcon:SetAlpha(0)
+    TargetFrameTextureFramePVPIcon:SetAlpha(0)
+    FocusFrameTextureFramePVPIcon:SetAlpha(0)
+
+    -- Chat alert bell
+    QuickJoinToastButton:SetAlpha(0)
+
+    -- Small Friendly Nameplates
+    C_NamePlate.SetNamePlateFriendlySize(60, 60)
+
+    -- Prestige Icons
+    PlayerPrestigeBadge:SetAlpha(0)
+    PlayerPrestigePortrait:SetAlpha(0)
+    TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
+    TargetFrameTextureFramePrestigePortrait:SetAlpha(0)
+    FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
+    FocusFrameTextureFramePrestigePortrait:SetAlpha(0)
+
+    hooksecurefunc("CompactUnitFrame_UpdateName", function(frame)
+        if frame and not frame:IsForbidden() then
+            local frame_name = frame:GetName()
+            if frame_name and frame_name:match("^CompactRaidFrame%d") and frame.unit and frame.name then
+                local unit_name = GetUnitName(frame.unit, true)
+                if unit_name then
+                    frame.name:SetText(unit_name:match("[^-]+"))
+                end
+            end
+        end
+    end)
+end
+
+Addon:Load()
+
+local frame = CreateFrame("FRAME")
+frame:RegisterEvent("GROUP_ROSTER_UPDATE")
+frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+frame:RegisterEvent("UNIT_FACTION")
+
+local function eventHandler(self, event, ...)
+    if UnitIsPlayer("target") then
+        c = RAID_CLASS_COLORS[select(2, UnitClass("target"))]
+        TargetFrameNameBackground:SetVertexColor(c.r, c.g, c.b)
+    end
+    if UnitIsPlayer("focus") then
+        c = RAID_CLASS_COLORS[select(2, UnitClass("focus"))]
+        FocusFrameNameBackground:SetVertexColor(c.r, c.g, c.b)
+    end
+    if PlayerFrame:IsShown() and not PlayerFrame.bg then
+        c = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+        bg = PlayerFrame:CreateTexture()
+        bg:SetPoint("TOPLEFT", PlayerFrameBackground)
+        bg:SetPoint("BOTTOMRIGHT", PlayerFrameBackground, 0, 22)
+        bg:SetTexture(TargetFrameNameBackground:GetTexture())
+        bg:SetVertexColor(c.r, c.g, c.b)
+        PlayerFrame.bg = true
+    end
+end
+
+frame:SetScript("OnEvent", eventHandler)
+
+for _, BarTextures in pairs({TargetFrameNameBackground, FocusFrameNameBackground}) do
+    BarTextures:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
+end
+
+-- Combat Indicator
+CTT = CreateFrame("Frame")
+CTT:SetParent(TargetFrame)
+CTT:SetPoint("Right", TargetFrame, -9, 7)
+CTT:SetSize(30, 30)
+CTT.t = CTT:CreateTexture(nil, BORDER)
+CTT.t:SetAllPoints()
+CTT.t:SetTexture("Interface\\Icons\\ABILITY_DUALWIELD")
+CTT:Hide()
+
+local function FrameOnUpdate(self)
+    if UnitAffectingCombat("target") and UnitIsPlayer then
+        self:Show()
+    else
+        self:Hide()
+    end
+end
+local g = CreateFrame("Frame")
+g:SetScript("OnUpdate", function(self)
+    FrameOnUpdate(CTT)
+end)
+
+CFT = CreateFrame("Frame")
+CFT:SetParent(FocusFrame)
+CFT:SetPoint("Right", FocusFrame, -16, 7)
+CFT:SetSize(30, 30)
+CFT.t = CFT:CreateTexture(nil, BORDER)
+CFT.t:SetAllPoints()
+CFT.t:SetTexture("Interface\\Icons\\ABILITY_DUALWIELD")
+CFT:Hide()
+
+local function FrameOnUpdate(self)
+    if UnitAffectingCombat("focus") and UnitIsPlayer then
+        self:Show()
+    else
+        self:Hide()
+    end
+end
+
+local g = CreateFrame("Frame")
+g:SetScript("OnUpdate", function(self)
+    FrameOnUpdate(CFT)
+end)
+
+-- Target/Focus Buffs/Debuffs
+spellid = {
+    [185422] = true,
+    [108208] = true,
+    [345231] = true,
+    [97462] = true,
+    [3411] = true,
+    [197690] = true
+}
+
+hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(_, name, i)
+    if name == "TargetFrameBuff" then
+        buffname, _, _, _, _, _, _, _, _, spellId = UnitBuff("target", i)
+        if spellid[buffname] or spellid[spellId] then
+            _G[name .. i]:SetSize(28, 28) -- Set Size if BIGfrom table
+        else
+            _G[name .. i]:SetSize(20, 20) -- Standard Size
+        end
+    end
+end)
+
+hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(_, name, i)
+    if name == "TargetFrameDebuff" then
+        buffname, _, _, _, _, _, _, _, _, spellId = UnitDebuff("target", i)
+        if spellid[buffname] or spellid[spellId] then
+            _G[name .. i]:SetSize(28, 28) -- Set Size if BIGfrom table
+        else
+            _G[name .. i]:SetSize(20, 20) -- Standard Size
+        end
+    end
+end)
+
+hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(_, name, i)
+    if name == "FocusFrameBuff" then
+        buffname, _, _, _, _, _, _, _, _, spellId = UnitBuff("focus", i)
+        if spellid[buffname] or spellid[spellId] then
+            _G[name .. i]:SetSize(28, 28) -- Set Size if BIGfrom table
+        else
+            _G[name .. i]:SetSize(20, 20) -- Standard Size
+        end
+    end
+end)
+
+hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(_, name, i)
+    if name == "FocusFrameDebuff" then
+        _G[name .. i]:SetSize(28, 28)
+        buffname, _, _, _, _, _, _, _, _, spellId = UnitDebuff("focus", i)
+        if spellid[buffname] or spellid[spellId] then
+            _G[name .. i]:SetSize(28, 28) -- Set Size if BIGfrom table
+        else
+            _G[name .. i]:SetSize(20, 20) -- Standard Size
+        end
+    end
+end)
+
