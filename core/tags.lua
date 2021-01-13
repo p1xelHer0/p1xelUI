@@ -6,9 +6,9 @@ ElvUF.Tags.Methods["pRole"] = function(unit)
     local Role = UnitGroupRolesAssigned(unit)
 
     if Role == "HEALER" then
-        return "|cff4baf4c+|r"
+        return "|cff4baf4c+|r "
     elseif Role == "TANK" then
-        return "|cffb56e45#|r"
+        return "|cffb56e45#|r "
     end
 
     return ""
