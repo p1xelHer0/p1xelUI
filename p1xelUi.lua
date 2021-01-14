@@ -17,7 +17,6 @@ function eventHandler:ADDON_LOADED(addon)
     if addon ~= addonName then
         return
     else
-
         for m, _ in pairs(p1xelUi.modules) do
             if p1xelUi.modules[m].OnLoad then
                 p1xelUi.modules[m]:OnLoad()
