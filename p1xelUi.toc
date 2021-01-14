@@ -1,4 +1,5 @@
-## Interface: 80205
+## Interface: 90002
 ## Title: p1xelUi
+## Author: p1xelHer0
 
-p1xelUi.lua
+p1xelUi.xml
