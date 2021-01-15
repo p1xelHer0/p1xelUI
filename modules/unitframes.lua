@@ -33,6 +33,13 @@ function m:SetupUnitframes()
     PetHitIndicator:Hide()
 
     PlayerFrame.name:SetAlpha(0)
+    PlayerFrameGroupIndicator:SetAlpha(0)
+    PlayerFrameRoleIcon:SetAlpha(0)
+    -- PlayerFrameLeaderIcon:SetAlpha(0)
+
+    -- PlayerFrameX:SetAlpha(0)
+    -- PlayerFrameX:SetAlpha(0)
+
     PlayerPrestigeBadge:SetAlpha(0)
     PlayerPrestigePortrait:SetAlpha(0)
     PlayerPVPIcon:SetAlpha(0)
@@ -47,7 +54,7 @@ function m:SetupUnitframes()
 
     -- Player
     PlayerFrame:ClearAllPoints()
-    PlayerFrame:SetPoint("CENTER", -500, 200)
+    PlayerFrame:SetPoint("CENTER", -480, 220)
     PlayerFrame:SetScale(frameScale)
     PlayerFrame.SetPoint = function()
     end
@@ -68,7 +75,7 @@ function m:SetupUnitframes()
 
     -- Focus
     FocusFrame:ClearAllPoints()
-    FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -100)
+    FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -130)
     FocusFrame:SetScale(frameScale)
     FocusFrameSpellBar:SetScale(castbarScale)
     FocusFrame.SetPoint = function()
@@ -153,15 +160,17 @@ function m:EnableClassColorNameBackground()
 end
 
 -- Combat indicator
-local combatIndicatorX = 87
-local combatIndicatorY = -23
-local combatIndicatorIcon = "Interface\\Reforging\\Reforge-Portrait"
+local combatIndicatorX = 62
+local combatIndicatorY = -17
+local combatIndicatorScale = 1
+local combatIndicatorSize = 30
+local combatIndicatorIcon = "Interface\\PlayerFrame\\Deathknight-Energize-Blood"
 
 m.TargetCombatIndicator = CreateFrame("Frame", nil, TargetFrame)
 m.TargetCombatIndicator:SetParent(TargetFrame)
 m.TargetCombatIndicator:SetPoint("CENTER", TargetFrame, combatIndicatorX, combatIndicatorY)
-m.TargetCombatIndicator:SetSize(30, 30)
-m.TargetCombatIndicator:SetScale(0.70)
+m.TargetCombatIndicator:SetSize(combatIndicatorSize, combatIndicatorSize)
+m.TargetCombatIndicator:SetScale(combatIndicatorScale)
 m.TargetCombatIndicator.icon = m.TargetCombatIndicator:CreateTexture(nil, "BORDER")
 m.TargetCombatIndicator.icon:SetAllPoints()
 m.TargetCombatIndicator.icon:SetTexture(combatIndicatorIcon)
@@ -170,8 +179,8 @@ m.TargetCombatIndicator:Hide()
 m.FocusCombatIndicator = CreateFrame("Frame", nil, FocusFrame)
 m.FocusCombatIndicator:SetParent(FocusFrame)
 m.FocusCombatIndicator:SetPoint("CENTER", FocusFrame, combatIndicatorX, combatIndicatorY)
-m.FocusCombatIndicator:SetSize(30, 30)
-m.FocusCombatIndicator:SetScale(0.70)
+m.FocusCombatIndicator:SetSize(combatIndicatorSize, combatIndicatorSize)
+m.FocusCombatIndicator:SetScale(combatIndicatorScale)
 m.FocusCombatIndicator.icon = m.FocusCombatIndicator:CreateTexture(nil, "BORDER")
 m.FocusCombatIndicator.icon:SetAllPoints()
 m.FocusCombatIndicator.icon:SetTexture(combatIndicatorIcon)

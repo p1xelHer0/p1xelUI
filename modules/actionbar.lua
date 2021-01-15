@@ -23,11 +23,15 @@ function m:OnLoad()
     SlidingActionBarTexture0:SetAlpha(0)
     SlidingActionBarTexture1:SetAlpha(0)
 
+    MicroButtonAndBagsBar:SetAlpha(0)
+    CharacterMicroButton:ClearAllPoints()
+    CharacterMicroButton:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 1, 1)
+
     ActionButton1:ClearAllPoints()
     ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, -314, 60)
 
     MultiBarBottomLeftButton1:ClearAllPoints()
-    MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 10)
+    MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 6)
 
     MultiBarBottomRightButton1:ClearAllPoints()
     MultiBarBottomRightButton1:SetPoint("LEFT", ActionButton12, "CENTER", 23, 0)

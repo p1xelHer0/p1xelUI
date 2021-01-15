@@ -15,15 +15,26 @@ function m:OnLoad()
 end
 
 function m:Settings()
+    ConsoleExec("ffxglow 0")
     QuickJoinToastButton:Hide(0)
-    SetCVar("UIScale", 0.75)
     UIErrorsFrame:Hide()
+
+    SetCVar("UIScale", 0.75)
     SetCVar('BreakUpLargeNumbers', 0)
     SetCVar("SHOW_ARENA_ENEMY_FRAMES_TEXT", 1)
     SetCVar("ShowArenaEnemyFrames", 1)
-    ConsoleExec("ffxglow 0")
     SetCVar("ffxDeath", 0)
     SetCVar("ffxNether", 0)
+    SetCVar("chatStyle", "classic")
+    SetCVar("checkAddonVersion", 0)
+    SetCVar("deselectOnClick", 1)
+    SetCVar("findYourselfMode", 1)
+    SetCVar("Outline", 3)
+    SetCVar("floatingCombatTextSpellMechanics", 1)
+    SetCVar("floatingCombatTextSpellMechanicsOther", 1)
+    SetCVar("maxFPS", 0)
+    SetCVar("maxFPSBk", 30)
+    SetCVar("maxFPSLoading", 10)
 end
 
 function m:SetupBuffs()
@@ -38,6 +49,8 @@ function m:SetupBuffs()
 end
 
 function m:SetupNameplates()
+    -- Smaller friendly nameplates
+	C_NamePlate.SetNamePlateFriendlySize(60, 60)
     -- Arena target 1 / 2 / 3 inside Arena
     hooksecurefunc("CompactUnitFrame_UpdateName", function(nameplate)
         if IsActiveBattlefieldArena() and nameplate.unit:find("nameplate") then
@@ -50,9 +63,6 @@ function m:SetupNameplates()
             end
         end
     end)
-
-    C_NamePlate.SetNamePlateFriendlySize(60, 30)
-    SetCVar("nameplateOccludedAlphaMult", 1)
 end
 
 function m:SetupRaidFrames()
