@@ -1,5 +1,5 @@
-local _, p1xelUi = ...
-local m = p1xelUi:CreateModule("SharedMedia")
+local _, p1xelUI = ...
+local m = p1xelUI:CreateModule("SharedMedia")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)
@@ -17,11 +17,11 @@ function m:SetupMedia()
         return
     end
 
-    LSM:Register("font", "p1xel", [[Interface\Addons\p1xelUi\media\font\PF_Tempesta_Seven.ttf]])
-    LSM:Register("font", "p1xel-ru", [[Interface\Addons\p1xelUi\media\font\iFlash_705.ttf]])
-    LSM:Register("font", "p1xel-regular", [[Interface\Addons\p1xelUi\media\font\Barlow_SemiCondensed_SemiBold.ttf]])
-    LSM:Register("font", "p1xel-bold", [[Interface\Addons\p1xelUi\media\font\Barlow_SemiCondensed_Black.ttf]])
-    LSM:Register("font", "p1xel-combat", [[Interface\Addons\p1xelUi\media\font\Die_in_a_fire.otf]])
+    LSM:Register("font", "p1xel", [[Interface\Addons\p1xelUI\media\font\PF_Tempesta_Seven.ttf]])
+    LSM:Register("font", "p1xel-ru", [[Interface\Addons\p1xelUI\media\font\iFlash_705.ttf]])
+    LSM:Register("font", "p1xel-regular", [[Interface\Addons\p1xelUI\media\font\Barlow_SemiCondensed_SemiBold.ttf]])
+    LSM:Register("font", "p1xel-bold", [[Interface\Addons\p1xelUI\media\font\Barlow_SemiCondensed_Black.ttf]])
+    LSM:Register("font", "p1xel-combat", [[Interface\Addons\p1xelUI\media\font\Die_in_a_fire.otf]])
 
-    LSM:Register("statusbar", "p1xel", [[Interface\Addons\p1xelUi\media\statusbar\statusbar.tga]])
+    LSM:Register("statusbar", "p1xel", [[Interface\Addons\p1xelUI\media\statusbar\statusbar.tga]])
 end
