@@ -1,26 +1,31 @@
-local E, L, V, P, G = unpack(ElvUI)
-local name = "p1xelUi"
-local mMT = E:NewModule(name, "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
-local EP = LibStub("LibElvUIPlugin-1.0")
-local addon, ns = ...
-local Version = GetAddOnMetadata(addon, "Version")
+local addonName, p1xelUi = ...
 
-local ReloadUI = ReloadUI
+p1xelUi.modules = {}
 
--- SharedMedia
-local LSM = LibStub("LibSharedMedia-3.0")
+local eventHandler = CreateFrame("Frame", nil, UIParent)
+eventHandler:SetScript("OnEvent", function(self, event, ...)
+    return self[event](self, ...)
+end)
+eventHandler:RegisterEvent("ADDON_LOADED")
 
-
-local function init()
-    -- too bright
-    ConsoleExec("ffxglow 0")
-
-    -- damage: 3,123 -> 3123
-    SetCVar('BreakUpLargeNumbers', 0)
-
-    -- we use ElvUI for arena frames
-    SetCVar("SHOW_ARENA_ENEMY_FRAMES_TEXT", 1)
-    SetCVar("ShowArenaEnemyFrames", 1)
+function p1xelUi:CreateModule(m)
+    p1xelUi.modules[m] = {}
+    return p1xelUi.modules[m]
 end
 
-init()
+local function startUi()
+    for m, _ in pairs(p1xelUi.modules) do
+        if p1xelUi.modules[m].OnLoad then
+            p1xelUi.modules[m]:OnLoad()
+        end
+    end
+end
+
+function eventHandler:ADDON_LOADED(addon)
+    if addon ~= addonName then
+        return
+    else
+        startUi()
+    end
+end
+

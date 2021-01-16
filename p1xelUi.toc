@@ -1,8 +1,6 @@
 ## Interface: 80205
 ## Title: p1xelUi
 ## RequiredDeps: ElvUI
-## Notes: Fonts and Tags for p1xelHer0s ElvUI
+## Notes: Media, tags and other shit for ElvUI
 
-p1xelUi.lua
-core\tags.lua
-core\sharedmedia.xml
+p1xelUi.xml
