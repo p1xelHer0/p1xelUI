@@ -7,19 +7,29 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 end)
 
 function m:OnLoad()
-    self:Settings()
+    self:Misc()
+    self:SetCVars()
     self:SetupBuffs()
-    self:SetupNameplates()
+    self:SetupNamePlates()
+    self:SetupGameTooltip()
     self:SetupRaidFrames()
     self:SetupMinimap()
 end
 
-function m:Settings()
-    ConsoleExec("ffxglow 0")
+function m:Misc()
     QuickJoinToastButton:Hide(0)
     UIErrorsFrame:Hide()
+end
 
-    SetCVar("UIScale", 0.75)
+function m:SetCVars()
+    SetCVar("autoLootDefault", 1)
+    SetCVar("cameraPitchMoveSpeed", 45)
+    SetCVar("cameraSmoothStyle", 0)
+    SetCVar("cameraYawMoveSpeed", 90)
+    SetCVar("ffxGlow", 0)
+    SetCVar("autoLootDefault", 1)
+    SetCVar("uiScale", 0.65)
+    SetCVar("useUiScale", 1)
     SetCVar('BreakUpLargeNumbers', 0)
     SetCVar("SHOW_ARENA_ENEMY_FRAMES_TEXT", 1)
     SetCVar("ShowArenaEnemyFrames", 1)
@@ -28,13 +38,35 @@ function m:Settings()
     SetCVar("chatStyle", "classic")
     SetCVar("checkAddonVersion", 0)
     SetCVar("deselectOnClick", 1)
+
     SetCVar("findYourselfMode", 1)
     SetCVar("Outline", 3)
+    SetCVar("OutlineEngineMode", 2)
+
     SetCVar("floatingCombatTextSpellMechanics", 1)
     SetCVar("floatingCombatTextSpellMechanicsOther", 1)
+
     SetCVar("maxFPS", 0)
     SetCVar("maxFPSBk", 30)
     SetCVar("maxFPSLoading", 10)
+
+    SetCVar("nameplateShowEnemyTotems", 1)
+    SetCVar("nameplateShowEnemyPets", 1)
+    SetCVar("nameplateShowEnemyGuardians", 1)
+    SetCVar("nameplateShowEnemyMinions", 1)
+    SetCVar("nameplateMaxDistance", 100)
+    SetCVar("nameplateMaxAlphaDistance", 100)
+    SetCVar("nameplateMinAlphaDistance", 100)
+    SetCVar("nameplateMinAlpha", 0.7)
+    SetCVar("nameplateOccludedAlphaMult", 0.5)
+    SetCVar("nameplateShowAll", 1)
+    SetCVar("NameplatePersonalShowAlways", 1)
+    SetCVar("nameplateTargetBehindMaxDistance", 30)
+
+    SetCVar("noBuffDebuffFilterOnTarget", 1)
+    SetCVar("showTargetOfTarget", 1)
+
+    SetCVar("whisperMode", "inline")
 end
 
 function m:SetupBuffs()
@@ -45,12 +77,18 @@ function m:SetupBuffs()
     end
 
     hooksecurefunc("UIParent_UpdateTopFramePositions", MoveBuffs)
+
     MoveBuffs()
 end
 
-function m:SetupNameplates()
-    -- Smaller friendly nameplates
-	C_NamePlate.SetNamePlateFriendlySize(60, 60)
+local function friendlyNamePlates()
+    C_NamePlate.SetNamePlateFriendlySize(60, 60)
+end
+
+function m:SetupNamePlates()
+    -- Smaller friendly NamePlates
+    friendlyNamePlates()
+
     -- Arena target 1 / 2 / 3 inside Arena
     hooksecurefunc("CompactUnitFrame_UpdateName", function(nameplate)
         if IsActiveBattlefieldArena() and nameplate.unit:find("nameplate") then
@@ -63,6 +101,29 @@ function m:SetupNameplates()
             end
         end
     end)
+
+    eventHandler:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+end
+
+function eventHandler:NAME_PLATE_UNIT_ADDED()
+    friendlyNamePlates()
+end
+
+function m:SetupGameTooltip()
+    local function FixGameTooltip()
+        -- Don't move tooltip to the left when enabling Right Bars
+        CONTAINER_OFFSET_X = 0
+    end
+
+    hooksecurefunc("UIParent_ManageFramePosition", function(index)
+        if InCombatLockdown() then
+            return
+        end
+
+        FixGameTooltip()
+    end)
+
+    FixGameTooltip()
 end
 
 function m:SetupRaidFrames()
@@ -101,3 +162,4 @@ function m:SetupMinimap()
 
     MiniMapTracking:Hide()
 end
+

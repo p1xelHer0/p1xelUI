@@ -11,59 +11,51 @@ function m:OnLoad()
     self:EnableClassColorStatusBar()
     self:EnableClassColorNameBackground()
     self:EnableCombatIndicator()
-    self:EnableBigBuffs()
+    -- self:EnableBigBuffs()
 end
 
 function m:SetupUnitframes()
-    local ToTX = -103
-    local ToTY = 14
+    local ToTX = -100
+    local ToTY = 11
 
-    local frameScale = 1.1
-    local castbarScale = 1.35
-
-    -- Hide feedback text
-    local feedbackText = PlayerFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
-
-    PlayerFrame.feedbackText = feedbackText
-    PlayerFrame.feedbackStartTime = 0
-    PetFrame.feedbackText = feedbackText
-    PetFrame.feedbackStartTime = 0
-
-    PlayerHitIndicator:Hide()
-    PetHitIndicator:Hide()
-
-    PlayerFrame.name:SetAlpha(0)
-    PlayerFrameGroupIndicator:SetAlpha(0)
-    PlayerFrameRoleIcon:SetAlpha(0)
-    -- PlayerFrameLeaderIcon:SetAlpha(0)
-
-    -- PlayerFrameX:SetAlpha(0)
-    -- PlayerFrameX:SetAlpha(0)
-
-    PlayerPrestigeBadge:SetAlpha(0)
-    PlayerPrestigePortrait:SetAlpha(0)
-    PlayerPVPIcon:SetAlpha(0)
-    TargetFrame.name:SetAlpha(0)
-    TargetFrameTextureFramePVPIcon:SetAlpha(0)
-    TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
-    TargetFrameTextureFramePrestigePortrait:SetAlpha(0)
-    FocusFrame.name:SetAlpha(0)
-    FocusFrameTextureFramePVPIcon:SetAlpha(0)
-    FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
-    FocusFrameTextureFramePrestigePortrait:SetAlpha(0)
+    local frameScale = 1.3
+    local castbarScale = 1.2
 
     -- Player
     PlayerFrame:ClearAllPoints()
-    PlayerFrame:SetPoint("CENTER", -480, 220)
+    PlayerFrame:SetPoint("CENTER", -500, 220)
+    PlayerFrame:SetUserPlaced(false)
     PlayerFrame:SetScale(frameScale)
     PlayerFrame.SetPoint = function()
     end
 
+    -- Feedback text
+    local feedbackText = PlayerFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
+    PlayerFrame.feedbackText = feedbackText
+    PlayerFrame.feedbackStartTime = 0
+    PlayerHitIndicator:Hide()
+    PlayerLeaderIcon:Hide()
+    PetHitIndicator:Hide()
+    PlayerFrame.name:SetAlpha(0)
+    PlayerFrameGroupIndicator:SetAlpha(0)
+    PlayerFrameRoleIcon:SetAlpha(0)
+    PlayerPrestigeBadge:SetAlpha(0)
+    PlayerPrestigePortrait:SetAlpha(0)
+    PlayerPVPIcon:SetAlpha(0)
+
+    PetFrame.feedbackText = feedbackText
+    PetFrame.feedbackStartTime = 0
+    PetName:SetAlpha(0)
+
     -- Target
     TargetFrame:ClearAllPoints()
-    TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
+    TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", 0, 0)
     TargetFrame:SetScale(frameScale)
+    TargetFrame:SetUserPlaced(false)
     TargetFrameSpellBar:SetScale(castbarScale)
+    TargetFrameTextureFramePVPIcon:SetAlpha(0)
+    TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
+    TargetFrameTextureFramePrestigePortrait:SetAlpha(0)
     TargetFrame.SetPoint = function()
     end
 
@@ -78,6 +70,9 @@ function m:SetupUnitframes()
     FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -130)
     FocusFrame:SetScale(frameScale)
     FocusFrameSpellBar:SetScale(castbarScale)
+    FocusFrameTextureFramePVPIcon:SetAlpha(0)
+    FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
+    FocusFrameTextureFramePrestigePortrait:SetAlpha(0)
     FocusFrame.SetPoint = function()
     end
 
@@ -102,18 +97,11 @@ function eventHandler:UPDATE_MOUSEOVER_UNIT()
     m.ColorStatusbar(isTooltipStatusBar, "mouseover")
 end
 
-local UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS, PlayerFrameHealthBar = UnitIsPlayer, UnitIsConnected,
-    UnitClass, RAID_CLASS_COLORS, PlayerFrameHealthBar
+local UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS = UnitIsPlayer, UnitIsConnected, UnitClass,
+    RAID_CLASS_COLORS
 local _, class, c
 
 function m.ColorStatusbar(statusbar, unit)
-    -- if statusbar == PlayerFrameHealthBar then
-    --     return
-    -- end
-    -- if statusbar ~= PlayerFrameHealthBar and statusbar ~= sb then
-    --     return
-    -- end
-
     if UnitIsPlayer(unit) and UnitIsConnected(unit) and UnitClass(unit) then
         if unit == statusbar.unit or statusbar == isTooltipStatusBar then
             _, class = UnitClass(unit)
@@ -215,7 +203,7 @@ function m:EnableBigBuffs()
     }
 
     local buffBigSize = 28
-    local buffStandardSize = 20
+    local buffStandardSize = 22
 
     hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(_, name, i)
         if name == "TargetFrameBuff" then

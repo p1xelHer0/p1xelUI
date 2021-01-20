@@ -6,7 +6,14 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, ...)
 end)
 
+local hideArrows = true
+local hideMacroNames = true
+local hideXPBar = true
+local hideHotkeys = true
+
 function m:OnLoad()
+    local actionBarScale = 1.2
+
     -- Hide artwork
     MainMenuBarArtFrameBackground.BackgroundSmall:SetAlpha(0)
     MainMenuBarArtFrameBackground.BackgroundLarge:SetAlpha(0)
@@ -23,17 +30,34 @@ function m:OnLoad()
     SlidingActionBarTexture0:SetAlpha(0)
     SlidingActionBarTexture1:SetAlpha(0)
 
-    MicroButtonAndBagsBar:SetAlpha(0)
-    CharacterMicroButton:ClearAllPoints()
-    CharacterMicroButton:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 1, 1)
+    -- Make ActionBars bigger
+    for i = 1, 12 do
+        _G["ActionButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarBottomLeftButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarBottomRightButton" .. i]:SetScale(actionBarScale)
+        -- _G["MultiBarLeftButton" .. i]:SetScale(actionBarScale)
+        -- _G["MultiBarRightButton" .. i]:SetScale(actionBarScale)
+    end
 
+    -- Move ActionBars
     ActionButton1:ClearAllPoints()
-    ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, -314, 60)
+
+    -- Actual position of ActionBar is set in `MoveRelativeToEnabledBars`
+    ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, -314, 10)
 
     MultiBarBottomLeftButton1:ClearAllPoints()
     MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 6)
 
+    MainMenuBarVehicleLeaveButton.ignoreFramePositionManager = true -- optional but sometimes helpful for Blizzard frames
+    MainMenuBarVehicleLeaveButton:SetMovable(true)
+    MainMenuBarVehicleLeaveButton:ClearAllPoints()
+    MainMenuBarVehicleLeaveButton:SetPoint("CENTER", UIParent, "CENTER", 30, 0)
+    MainMenuBarVehicleLeaveButton:SetScale(1.3)
+    MainMenuBarVehicleLeaveButton:SetUserPlaced(true)
+    MainMenuBarVehicleLeaveButton:SetMovable(false)
+
     MultiBarBottomRightButton1:ClearAllPoints()
+
     MultiBarBottomRightButton1:SetPoint("LEFT", ActionButton12, "CENTER", 23, 0)
     MultiBarBottomRightButton7:ClearAllPoints()
     MultiBarBottomRightButton7:SetPoint("LEFT", MultiBarBottomLeftButton12, "CENTER", 23, 0)
@@ -53,40 +77,43 @@ function m:OnLoad()
     MultiBarBottomLeft:SetMovable(true)
     MultiBarBottomLeft:SetUserPlaced(true)
 
-    -- Fix position of pet bar
-    local petAnchor = CreateFrame("Frame", nil, PetActionBarFrame)
-    petAnchor:SetSize(509, 43)
+    -- Pet ActionBar
     for i = 1, 10 do
         local button = _G["PetActionButton" .. i]
         button:ClearAllPoints()
         if i == 1 then
-            button:SetPoint("BOTTOMLEFT", petAnchor, "BOTTOMLEFT", 36, 2)
+            -- Actual position of PetBar is set in `MoveRelativeToEnabledBars`
+            button:SetPoint("BOTTOMLEFT", ActionButton1, "BOTTOMLEFT", 0, 0)
         else
-            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 8, 0)
+            -- Spacing of PetBars
+            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 4, 0)
         end
     end
 
-    -- Fix position of stance bar
-    StanceBarFrame.ignoreFramePositionManager = true
-    StanceBarFrame:SetAlpha(0)
+    -- Extra Action Bar
+    ExtraActionButton1:ClearAllPoints()
+    ExtraActionButton1:SetPoint("BOTTOM", PlayerPowerBarAlt, "TOP", 0, 20)
 
-    hooksecurefunc("UIParent_ManageFramePosition", function(index)
-        if InCombatLockdown() then
-            return
-        end
+    -- Castbar
+    CastingBarFrame.ignoreFramePositionManager = true
+    CastingBarFrame:ClearAllPoints()
+    CastingBarFrame:SetPoint("CENTER", 0, -310)
+    CastingBarFrame:SetScale(1.2)
 
-        if index == "PETACTIONBAR_YPOS" then
-            petAnchor:SetPoint("BOTTOMLEFT", MainMenuBarArtFrameBackground, "TOPLEFT", 30,
-                SHOW_MULTI_ACTIONBAR_1 and 60 or -2)
-        elseif index == "StanceBarFrame" then
-            StanceBarFrame:SetPoint("BOTTOMLEFT", MainMenuBarArtFrameBackground, "TOPLEFT", 30,
-                SHOW_MULTI_ACTIONBAR_1 and 60 or -2)
-        end
-    end)
+    -- Alternative PowerBar
+    PlayerPowerBarAlt.ignoreFramePositionManager = true -- optional but sometimes helpful for Blizzard frames
+    PlayerPowerBarAlt:SetMovable(true)
+    PlayerPowerBarAlt:SetUserPlaced(true)
+    PlayerPowerBarAlt:ClearAllPoints()
+    PlayerPowerBarAlt:SetPoint("BOTTOM", "CastingBarFrame", "TOP", 0, 20)
+    PlayerPowerBarAlt:SetMovable(false)
 
-    -- Fix texture size on stance bar when bottom left bar is disabled
+    StanceButton1:ClearAllPoints()
+
+    -- Hide StanceBar texture when Bottom Left Bar is hidden
     local sizeHook = false
 
+    -- Create textures for each Stance Button to make it look good
     local function widthFunc(self)
         if sizeHook then
             return
@@ -108,7 +135,46 @@ function m:OnLoad()
     for i = 1, NUM_STANCE_SLOTS do
         hooksecurefunc(_G["StanceButton" .. i]:GetNormalTexture(), "SetWidth", widthFunc)
         hooksecurefunc(_G["StanceButton" .. i]:GetNormalTexture(), "SetHeight", heightFunc)
+        local button = _G["StanceButton" .. i]
+        button:ClearAllPoints()
+        if i == 1 then
+            -- StanceButton start
+            button:SetPoint("BOTTOMLEFT", ActionButton1, "BOTTOMLEFT", 0, 0)
+        else
+            -- Rest of Pet StanceButtons, space etc
+            button:SetPoint("LEFT", "StanceButton" .. i - 1, "RIGHT", 4, 0)
+        end
     end
+
+    local function MoveRelativeToEnabledBars(index)
+        -- Move Main Action Bar to middle
+        local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -314 or -231
+
+        -- Move Pet X position if Bottom Right Bar is enabled
+        local petXPos = SHOW_MULTI_ACTIONBAR_2 and 159 * actionBarScale or 76 * actionBarScale
+
+        -- Move Pet Y position if Bottom Left Bar is enabled
+        local petYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+
+        -- Move Stance Y is Bottom Left Bar is enabled
+        local stanceYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+
+        if index == "PETACTIONBAR_YPOS" then
+            PetActionButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", petXPos, petYPos)
+            ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, mainBarXPos, 4)
+        elseif index == "StanceBarFrame" then
+            StanceButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOP", 10, stanceYPos)
+        end
+    end
+
+    -- Position ActionBars properly when enabling/disabling Extra ActionBars
+    hooksecurefunc("UIParent_ManageFramePosition", function(index)
+        if InCombatLockdown() then
+            return
+        end
+
+        MoveRelativeToEnabledBars(index)
+    end)
 
     self.buttons = {}
     for i = 1, 12 do
@@ -120,7 +186,9 @@ function m:OnLoad()
     end
 
     local function updateHotkeys(self)
-        self.HotKey:Hide()
+        if (hideHotkeys) then
+            self.HotKey:Hide(hideHotkeys)
+        end
     end
 
     for _, button in pairs(self.buttons) do
@@ -135,10 +203,11 @@ function m:OnLoad()
     _G["MultiBarBottomRightButton11"]:SetAlpha(0)
     _G["MultiBarBottomRightButton12"]:SetAlpha(0)
 
-    self:HideXPBar(true)
-    self:HideArrows(true)
-    self:HideHotkeys(true)
-    self:HideMacroNames(true)
+    self:HideXPBar(hideXPBar)
+    self:HideArrows(hideArrows)
+    self:HideHotkeys(hideHotkeys)
+    self:HideMacroNames(hideMacroNames)
+    self:HideMicroMenuAndBags()
 end
 
 function eventHandler:PLAYER_LOGIN()
@@ -173,5 +242,67 @@ end
 function m:HideMacroNames(hide)
     for _, button in ipairs(self.buttons) do
         button.Name:SetShown(not hide)
+    end
+end
+
+function m:HideMicroMenuAndBags()
+    local ignore
+
+    local function setAlpha(b, a)
+        if ignore then
+            return
+        end
+        ignore = true
+        if b:IsMouseOver() then
+            b:SetAlpha(100)
+        else
+            b:SetAlpha(0)
+        end
+        ignore = nil
+    end
+
+    local function showMicroButtons(self)
+        for _, v in ipairs(MICRO_BUTTONS) do
+            ignore = true
+            _G[v]:SetAlpha(100)
+            ignore = nil
+        end
+    end
+
+    local function hideMicroButtons(self)
+        for _, microButton in ipairs(MICRO_BUTTONS) do
+            ignore = true
+            _G[microButton]:SetAlpha(0)
+            ignore = nil
+        end
+    end
+
+    for _, microButton in ipairs(MICRO_BUTTONS) do
+        microButton = _G[microButton]
+        hooksecurefunc(microButton, "SetAlpha", setAlpha)
+        microButton:HookScript("OnEnter", showMicroButtons)
+        microButton:HookScript("OnLeave", hideMicroButtons)
+        microButton:SetAlpha(0)
+    end
+
+    local t = {"MicroButtonAndBagsBar"}
+
+    local function showFoo(self)
+        for _, v in ipairs(t) do
+            _G[v]:SetAlpha(100)
+        end
+    end
+
+    local function hideFoo(self)
+        for _, v in ipairs(t) do
+            _G[v]:SetAlpha(0)
+        end
+    end
+
+    for _, v in ipairs(t) do
+        v = _G[v]
+        v:SetScript("OnEnter", showFoo)
+        v:SetScript("OnLeave", hideFoo)
+        v:Hide(0)
     end
 end
