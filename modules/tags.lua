@@ -29,5 +29,5 @@ function m:ElvUITags()
         return ""
     end
 
-    E:AddTagInfo(roleTag, ns.mName, L["T for Tank, H for Healer."], 4)
+    E:AddTagInfo(roleTag, ns.mName, L["# for Tank, + for Healer and blank for DPS"], 4)
 end
