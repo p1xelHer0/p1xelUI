@@ -14,6 +14,7 @@ function m:OnLoad()
     self:SetupGameTooltip()
     self:SetupRaidFrames()
     self:SetupMinimap()
+    self:MouseOverElements()
 end
 
 function m:Misc()
@@ -28,7 +29,7 @@ function m:SetCVars()
     SetCVar("cameraYawMoveSpeed", 90)
     SetCVar("ffxGlow", 0)
     SetCVar("autoLootDefault", 1)
-    SetCVar("uiScale", 0.65)
+    SetCVar("uiScale", 0.75)
     SetCVar("useUiScale", 1)
     SetCVar('BreakUpLargeNumbers', 0)
     SetCVar("SHOW_ARENA_ENEMY_FRAMES_TEXT", 1)
@@ -72,8 +73,8 @@ end
 function m:SetupBuffs()
     local function MoveBuffs()
         BuffFrame:ClearAllPoints()
-        BuffFrame:SetPoint("TOP", 500, -120)
-        BuffFrame:SetScale(1.3)
+        BuffFrame:SetPoint("TOP", 480, -80)
+        BuffFrame:SetScale(1.2)
     end
 
     hooksecurefunc("UIParent_UpdateTopFramePositions", MoveBuffs)
@@ -135,6 +136,7 @@ function m:SetupRaidFrames()
                 local unit_name = GetUnitName(frame.unit, true)
                 if unit_name then
                     frame.name:SetText(unit_name:match("[^-]+"))
+                    frame.name:SetText("")
                 end
             end
         end
@@ -145,13 +147,14 @@ function m:SetupMinimap()
     MinimapZoomIn:Hide()
     MinimapZoomOut:Hide()
     MinimapBorderTop:Hide()
-    GameTimeFrame:Hide()
     MinimapZoneText:Hide()
+    MiniMapWorldMapButton:Hide()
 
-    MiniMapWorldMapButton:SetAlpha(0)
+    MinimapNorthTag:SetAlpha(0)
+    GameTimeFrame:SetAlpha(0)
+    MiniMapTracking:SetAlpha(0)
 
     Minimap:EnableMouseWheel(true)
-
     Minimap:SetScript('OnMouseWheel', function(_, delta)
         if delta > 0 then
             Minimap_ZoomIn()
@@ -159,7 +162,24 @@ function m:SetupMinimap()
             Minimap_ZoomOut()
         end
     end)
+end
 
-    MiniMapTracking:Hide()
+function m:MouseOverElements()
+    local ELEMENTS_TO_MOUSEOVER = {GarrisonLandingPageMinimapButton, GameTimeFrame, QueueStatusMinimapButton,
+                                   MiniMapTracking}
+
+    local function showElement(self)
+        self:SetAlpha(100)
+    end
+
+    local function hideElement(self)
+        self:SetAlpha(0)
+    end
+
+    for _, element in ipairs(ELEMENTS_TO_MOUSEOVER) do
+        element:HookScript("OnEnter", showElement)
+        element:HookScript("OnLeave", hideElement)
+        element:SetAlpha(0)
+    end
 end
 

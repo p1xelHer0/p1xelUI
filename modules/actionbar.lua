@@ -12,7 +12,7 @@ local hideXPBar = true
 local hideHotkeys = true
 
 function m:OnLoad()
-    local actionBarScale = 1.2
+    local actionBarScale = 1.0
 
     -- Hide artwork
     MainMenuBarArtFrameBackground.BackgroundSmall:SetAlpha(0)
@@ -97,7 +97,7 @@ function m:OnLoad()
     -- Castbar
     CastingBarFrame.ignoreFramePositionManager = true
     CastingBarFrame:ClearAllPoints()
-    CastingBarFrame:SetPoint("CENTER", 0, -310)
+    CastingBarFrame:SetPoint("BOTTOM", 0, 170)
     CastingBarFrame:SetScale(1.2)
 
     -- Alternative PowerBar
@@ -252,12 +252,15 @@ function m:HideMicroMenuAndBags()
         if ignore then
             return
         end
+
         ignore = true
+
         if b:IsMouseOver() then
             b:SetAlpha(100)
         else
             b:SetAlpha(0)
         end
+
         ignore = nil
     end
 
