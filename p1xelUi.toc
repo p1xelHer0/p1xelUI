@@ -1,5 +1,5 @@
 ## Interface: 90002
-## Title: p1xelUi
+## Title: p1xelUI
 ## Author: p1xelHer0
 
-p1xelUi.xml
+p1xelUI.xml

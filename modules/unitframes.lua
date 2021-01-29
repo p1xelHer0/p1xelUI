@@ -1,5 +1,5 @@
-local _, p1xelUi = ...
-local m = p1xelUi:CreateModule("Unitframes")
+local _, p1xelUI = ...
+local m = p1xelUI:CreateModule("Unitframes")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)

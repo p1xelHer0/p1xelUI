@@ -1,6 +1,6 @@
-local addonName, p1xelUi = ...
+local addonName, p1xelUI = ...
 
-p1xelUi.modules = {}
+p1xelUI.modules = {}
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)
@@ -8,15 +8,15 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 end)
 eventHandler:RegisterEvent("ADDON_LOADED")
 
-function p1xelUi:CreateModule(m)
-    p1xelUi.modules[m] = {}
-    return p1xelUi.modules[m]
+function p1xelUI:CreateModule(m)
+    p1xelUI.modules[m] = {}
+    return p1xelUI.modules[m]
 end
 
 local function startUI()
-    for m, _ in pairs(p1xelUi.modules) do
-        if p1xelUi.modules[m].OnLoad then
-            p1xelUi.modules[m]:OnLoad()
+    for m, _ in pairs(p1xelUI.modules) do
+        if p1xelUI.modules[m].OnLoad then
+            p1xelUI.modules[m]:OnLoad()
         end
     end
     print("p1xelUI loaded")
