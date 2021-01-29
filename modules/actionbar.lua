@@ -48,14 +48,6 @@ function m:OnLoad()
     MultiBarBottomLeftButton1:ClearAllPoints()
     MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 6)
 
-    MainMenuBarVehicleLeaveButton.ignoreFramePositionManager = true -- optional but sometimes helpful for Blizzard frames
-    MainMenuBarVehicleLeaveButton:SetMovable(true)
-    MainMenuBarVehicleLeaveButton:ClearAllPoints()
-    MainMenuBarVehicleLeaveButton:SetPoint("CENTER", UIParent, "CENTER", 30, 0)
-    MainMenuBarVehicleLeaveButton:SetScale(1.3)
-    MainMenuBarVehicleLeaveButton:SetUserPlaced(true)
-    MainMenuBarVehicleLeaveButton:SetMovable(false)
-
     MultiBarBottomRightButton1:ClearAllPoints()
 
     MultiBarBottomRightButton1:SetPoint("LEFT", ActionButton12, "CENTER", 23, 0)
@@ -97,7 +89,7 @@ function m:OnLoad()
     -- Castbar
     CastingBarFrame.ignoreFramePositionManager = true
     CastingBarFrame:ClearAllPoints()
-    CastingBarFrame:SetPoint("BOTTOM", 0, 170)
+    CastingBarFrame:SetPoint("BOTTOM", 0, 150)
     CastingBarFrame:SetScale(1.2)
 
     -- Alternative PowerBar

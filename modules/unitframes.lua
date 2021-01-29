@@ -11,7 +11,7 @@ function m:OnLoad()
     self:EnableClassColorStatusBar()
     self:EnableClassColorNameBackground()
     self:EnableCombatIndicator()
-    -- self:EnableBigBuffs()
+    self:EnableBigBuffs()
 end
 
 function m:SetupUnitframes()
@@ -23,7 +23,7 @@ function m:SetupUnitframes()
 
     -- Player
     PlayerFrame:ClearAllPoints()
-    PlayerFrame:SetPoint("CENTER", -500, 220)
+    PlayerFrame:SetPoint("CENTER", -520, 220)
     PlayerFrame:SetUserPlaced(false)
     PlayerFrame:SetScale(frameScale)
     PlayerFrame.SetPoint = function()
