@@ -7,9 +7,10 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 end)
 
 local hideArrows = true
-local hideMacroNames = true
 local hideXPBar = true
-local hideHotkeys = true
+
+local hideHotkeys = false
+local hideMacroNames = false
 
 function m:OnLoad()
     local actionBarScale = 1.0
@@ -54,7 +55,7 @@ function m:OnLoad()
     MultiBarBottomRightButton7:ClearAllPoints()
     MultiBarBottomRightButton7:SetPoint("LEFT", MultiBarBottomLeftButton12, "CENTER", 23, 0)
 
-    -- Hide XP Bar. Don't touch MainMenuBar it's evil
+    -- Don't touch MainMenuBar it's evil
     MainMenuBarArtFrameBackground:ClearAllPoints()
     MainMenuBarArtFrameBackground:SetPoint("LEFT", MainMenuBar)
 
@@ -153,7 +154,7 @@ function m:OnLoad()
 
         if index == "PETACTIONBAR_YPOS" then
             PetActionButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", petXPos, petYPos)
-            ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, mainBarXPos, 4)
+            ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, mainBarXPos, 54)
         elseif index == "StanceBarFrame" then
             StanceButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOP", 10, stanceYPos)
         end

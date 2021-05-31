@@ -11,14 +11,14 @@ function m:OnLoad()
     self:EnableClassColorStatusBar()
     self:EnableClassColorNameBackground()
     self:EnableCombatIndicator()
-    self:EnableBigBuffs()
+    -- self:EnableBigBuffs()
 end
 
 function m:SetupUnitframes()
     local ToTX = -100
     local ToTY = 11
 
-    local frameScale = 1.1
+    local frameScale = 1.23
     local castbarScale = 1.29
 
     -- Player
@@ -49,10 +49,10 @@ function m:SetupUnitframes()
 
     -- Target
     TargetFrame:ClearAllPoints()
-    TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", 0, 0)
+    TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
     TargetFrame:SetScale(frameScale)
     TargetFrame:SetUserPlaced(false)
-    TargetFrame.name:SetAlpha(0)
+    -- TargetFrame.name:SetAlpha(0)
     TargetFrameSpellBar:SetScale(castbarScale)
     TargetFrameTextureFramePVPIcon:SetAlpha(0)
     TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
@@ -72,7 +72,7 @@ function m:SetupUnitframes()
     FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -130)
     FocusFrame:SetScale(frameScale)
     FocusFrame:SetUserPlaced(false)
-    FocusFrame.name:SetAlpha(0)
+    -- FocusFrame.name:SetAlpha(0)
     FocusFrameSpellBar:SetScale(castbarScale)
     FocusFrameTextureFramePVPIcon:SetAlpha(0)
     FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
