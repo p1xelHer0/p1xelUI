@@ -10,7 +10,6 @@ function m:OnLoad()
     self:Misc()
     self:SetCVars()
     self:SetupBuffs()
-    self:SetupNamePlates()
     self:SetupGameTooltip()
     self:SetupRaidFrames()
     self:SetupMinimap()
@@ -18,7 +17,6 @@ function m:OnLoad()
 end
 
 function m:Misc()
-    QuickJoinToastButton:Hide(0)
     UIErrorsFrame:Hide()
 end
 
@@ -151,6 +149,7 @@ function m:SetupMinimap()
     MinimapZoomIn:Hide()
     MinimapZoomOut:Hide()
     MinimapBorderTop:Hide()
+    MinimapToggleButton:Hide()
     MinimapZoneText:Hide()
     MiniMapWorldMapButton:Hide()
 
@@ -169,7 +168,7 @@ function m:SetupMinimap()
 end
 
 function m:MouseOverElements()
-    local ELEMENTS_TO_MOUSEOVER = {GarrisonLandingPageMinimapButton, GameTimeFrame, QueueStatusMinimapButton,
+    local ELEMENTS_TO_MOUSEOVER = {GameTimeFrame, QueueStatusMinimapButton,
                                    MiniMapTracking}
 
     local function showElement(self)

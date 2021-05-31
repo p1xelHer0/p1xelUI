@@ -6,45 +6,65 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, ...)
 end)
 
-local hideArrows = true
-local hideXPBar = true
+local hideArrows = false
+local hideXPBar = false
 
 local hideHotkeys = false
-local hideMacroNames = false
+local hideMacroNames = true
 
 function m:OnLoad()
-    local actionBarScale = 1.0
+    local actionBarScale = 1
 
     -- Hide artwork
-    MainMenuBarArtFrameBackground.BackgroundSmall:SetAlpha(0)
-    MainMenuBarArtFrameBackground.BackgroundLarge:SetAlpha(0)
-    MainMenuBarArtFrameBackground.QuickKeybindGlowLarge:SetAlpha(0)
-    MainMenuBarArtFrameBackground.QuickKeybindGlowSmall:SetAlpha(0)
-    MultiBarBottomLeft.QuickKeybindGlow:SetAlpha(0)
-    MultiBarBottomRight.QuickKeybindGlow:SetAlpha(0)
-    MainMenuBarArtFrame.RightEndCap:Hide()
-    MainMenuBarArtFrame.LeftEndCap:Hide()
-    MainMenuBarArtFrame.PageNumber:Hide()
+    MainMenuBarRightEndCap:Hide()
+    MainMenuBarLeftEndCap:Hide()
+
+    for i = 0, 3 do
+        _G["MainMenuBarTexture" .. i]:Hide()
+    end
+
     StanceBarLeft:SetAlpha(0)
     StanceBarRight:SetAlpha(0)
     StanceBarMiddle:SetAlpha(0)
     SlidingActionBarTexture0:SetAlpha(0)
     SlidingActionBarTexture1:SetAlpha(0)
 
-    -- Make ActionBars bigger
-    for i = 1, 12 do
-        _G["ActionButton" .. i]:SetScale(actionBarScale)
-        _G["MultiBarBottomLeftButton" .. i]:SetScale(actionBarScale)
-        _G["MultiBarBottomRightButton" .. i]:SetScale(actionBarScale)
-        -- _G["MultiBarLeftButton" .. i]:SetScale(actionBarScale)
-        -- _G["MultiBarRightButton" .. i]:SetScale(actionBarScale)
-    end
-
     -- Move ActionBars
     ActionButton1:ClearAllPoints()
 
     -- Actual position of ActionBar is set in `MoveRelativeToEnabledBars`
     ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, -314, 10)
+
+    -- Make ActionBars bigger
+    for i = 1, 12 do
+        _G["ActionButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarBottomLeftButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarBottomRightButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarLeftButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarRightButton" .. i]:SetScale(actionBarScale)
+    end
+
+    MainMenuBarBackpackButton:ClearAllPoints()
+    MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
+
+    for i = 0, 3 do
+      _G["CharacterBag".. i .. "Slot"]:ClearAllPoints()
+      _G["CharacterBag".. i .. "Slot"]:SetPoint("RIGHT", MainMenuBarBackpackButton, "LEFT", -37 * i, 0)
+    end
+
+    KeyRingButton:ClearAllPoints()
+    KeyRingButton:SetPoint("RIGHT", CharacterBag3Slot, "LEFT", 0, 0)
+
+    MainMenuBarPerformanceBar:ClearAllPoints()
+    MainMenuBarPerformanceBar:SetPoint("RIGHT", KeyRingButton, "LEFT", 0, 0)
+    MainMenuBarPerformanceBar:SetAlpha(0)
+
+    MainMenuBarPerformanceBarFrameButton:ClearAllPoints()
+    MainMenuBarPerformanceBarFrameButton:SetPoint("RIGHT", KeyRingButton, "LEFT", 0, 0)
+
+    CharacterMicroButton:ClearAllPoints()
+    CharacterMicroButton:SetPoint("BOTTOMRIGHT", KeyRingButton, "TOPLEFT", 23, -1)
+
 
     MultiBarBottomLeftButton1:ClearAllPoints()
     MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 6)
@@ -55,20 +75,12 @@ function m:OnLoad()
     MultiBarBottomRightButton7:ClearAllPoints()
     MultiBarBottomRightButton7:SetPoint("LEFT", MultiBarBottomLeftButton12, "CENTER", 23, 0)
 
-    -- Don't touch MainMenuBar it's evil
-    MainMenuBarArtFrameBackground:ClearAllPoints()
-    MainMenuBarArtFrameBackground:SetPoint("LEFT", MainMenuBar)
-
-    hooksecurefunc(StatusTrackingBarManager, "LayoutBar", function(self, bar)
-        bar:SetPoint("BOTTOM", MainMenuBarArtFrameBackground, 0, select(5, bar:GetPoint()));
-    end)
-
     -- MainMenuBar blocks click action on some moved buttons
-    MainMenuBar:EnableMouse(false)
+    -- MainMenuBar:EnableMouse(false)
 
     -- UIParent_ManageFramePosition will ignore a frame if it's user-placed
-    MultiBarBottomLeft:SetMovable(true)
-    MultiBarBottomLeft:SetUserPlaced(true)
+    -- MultiBarBottomLeft:SetMovable(true)
+    -- MultiBarBottomLeft:SetUserPlaced(true)
 
     -- Pet ActionBar
     for i = 1, 10 do
@@ -83,23 +95,11 @@ function m:OnLoad()
         end
     end
 
-    -- Extra Action Bar
-    ExtraActionButton1:ClearAllPoints()
-    ExtraActionButton1:SetPoint("BOTTOM", PlayerPowerBarAlt, "TOP", 0, 20)
-
     -- Castbar
     CastingBarFrame.ignoreFramePositionManager = true
     CastingBarFrame:ClearAllPoints()
     CastingBarFrame:SetPoint("BOTTOM", 0, 150)
     CastingBarFrame:SetScale(1.2)
-
-    -- Alternative PowerBar
-    PlayerPowerBarAlt.ignoreFramePositionManager = true -- optional but sometimes helpful for Blizzard frames
-    PlayerPowerBarAlt:SetMovable(true)
-    PlayerPowerBarAlt:SetUserPlaced(true)
-    PlayerPowerBarAlt:ClearAllPoints()
-    PlayerPowerBarAlt:SetPoint("BOTTOM", "CastingBarFrame", "TOP", 0, 20)
-    PlayerPowerBarAlt:SetMovable(false)
 
     StanceButton1:ClearAllPoints()
 
@@ -185,16 +185,16 @@ function m:OnLoad()
     end
 
     for _, button in pairs(self.buttons) do
-        hooksecurefunc(button, "UpdateHotkeys", updateHotkeys)
+        -- hooksecurefunc(button, "UpdateHotkeys", updateHotkeys)
     end
 
     hooksecurefunc("ActionButton_UpdateRangeIndicator", updateHotkeys)
     hooksecurefunc("PetActionButton_SetHotkeys", updateHotkeys)
 
-    _G["MultiBarBottomRightButton5"]:SetAlpha(0)
-    _G["MultiBarBottomRightButton6"]:SetAlpha(0)
-    _G["MultiBarBottomRightButton11"]:SetAlpha(0)
-    _G["MultiBarBottomRightButton12"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton5"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton6"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton11"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton12"]:SetAlpha(0)
 
     self:HideXPBar(hideXPBar)
     self:HideArrows(hideArrows)
@@ -214,21 +214,30 @@ function eventHandler:PLAYER_LOGIN()
 end
 
 function m:HideXPBar(hide)
-    StatusTrackingBarManager:SetAlpha(hide and 0 or 1)
-    MainMenuBarArtFrameBackground:SetPoint("BOTTOM", hide and UIParent or MainMenuBar, 0, hide and 3 or 0)
+    -- StatusTrackingBarManager:SetAlpha(hide and 0 or 1)
+    -- MainMenuBarArtFrameBackground:SetPoint("BOTTOM", hide and UIParent or MainMenuBar, 0, hide and 3 or 0)
 end
 
 function m:HideArrows(hide)
-    ActionBarDownButton:SetAlpha(hide and 0 or 1)
-    ActionBarUpButton:SetAlpha(hide and 0 or 1)
+    -- ActionBarDownButton:SetAlpha(hide and 0 or 1)
+    -- ActionBarUpButton:SetAlpha(hide and 0 or 1)
+
+    ActionBarUpButton:ClearAllPoints()
+    ActionBarUpButton:SetPoint("RIGHT", ActionButton1, "LEFT", 0, 10)
+
+    ActionBarDownButton:ClearAllPoints()
+    ActionBarDownButton:SetPoint("TOP", ActionBarUpButton, "BOTTOM", 0, 9)
+
+    MainMenuBarPageNumber:ClearAllPoints()
+    MainMenuBarPageNumber:SetPoint("TOPRIGHT", ActionBarUpButton, "LEFT", 0, -4)
 end
 
 function m:HideHotkeys(hide)
     for _, button in ipairs(self.buttons) do
-        button:UpdateHotkeys(button.buttonType)
+        -- button:UpdateHotkeys(button.buttonType)
     end
     for i = 1, 10 do
-        PetActionButton_SetHotkeys(_G["PetActionButton" .. i])
+        -- PetActionButton_SetHotkeys(_G["PetActionButton" .. i])
     end
 end
 
@@ -239,66 +248,26 @@ function m:HideMacroNames(hide)
 end
 
 function m:HideMicroMenuAndBags()
-    local ignore
+    local showOnHover = {"MainMenuBarBackpackButton", "CharacterBag0Slot",
+                         "CharacterBag1Slot", "CharacterBag2Slot", "CharacterBag3Slot", 
+                         "KeyRingButton", "CharacterMicroButton","SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "SocialsMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
 
-    local function setAlpha(b, a)
-        if ignore then
-            return
-        end
-
-        ignore = true
-
-        if b:IsMouseOver() then
-            b:SetAlpha(100)
-        else
-            b:SetAlpha(0)
-        end
-
-        ignore = nil
-    end
-
-    local function showMicroButtons(self)
-        for _, v in ipairs(MICRO_BUTTONS) do
-            ignore = true
-            _G[v]:SetAlpha(100)
-            ignore = nil
-        end
-    end
-
-    local function hideMicroButtons(self)
-        for _, microButton in ipairs(MICRO_BUTTONS) do
-            ignore = true
-            _G[microButton]:SetAlpha(0)
-            ignore = nil
-        end
-    end
-
-    for _, microButton in ipairs(MICRO_BUTTONS) do
-        microButton = _G[microButton]
-        hooksecurefunc(microButton, "SetAlpha", setAlpha)
-        microButton:HookScript("OnEnter", showMicroButtons)
-        microButton:HookScript("OnLeave", hideMicroButtons)
-        microButton:SetAlpha(0)
-    end
-
-    local t = {"MicroButtonAndBagsBar"}
-
-    local function showFoo(self)
-        for _, v in ipairs(t) do
+    local function showElement(self)
+        for _, v in ipairs(showOnHover) do
             _G[v]:SetAlpha(100)
         end
     end
 
-    local function hideFoo(self)
-        for _, v in ipairs(t) do
+    local function hideElement(self)
+        for _, v in ipairs(showOnHover) do
             _G[v]:SetAlpha(0)
         end
     end
 
-    for _, v in ipairs(t) do
+    for _, v in ipairs(showOnHover) do
         v = _G[v]
-        v:SetScript("OnEnter", showFoo)
-        v:SetScript("OnLeave", hideFoo)
-        v:Hide(0)
+        v:SetScript("OnEnter", showElement)
+        v:SetScript("OnLeave", hideElement)
+        v:SetAlpha(0)
     end
 end

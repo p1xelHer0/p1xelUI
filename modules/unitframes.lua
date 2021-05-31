@@ -38,9 +38,9 @@ function m:SetupUnitframes()
     PetHitIndicator:Hide()
     PlayerFrame.name:SetAlpha(0)
     PlayerFrameGroupIndicator:SetAlpha(0)
-    PlayerFrameRoleIcon:SetAlpha(0)
-    PlayerPrestigeBadge:SetAlpha(0)
-    PlayerPrestigePortrait:SetAlpha(0)
+    -- PlayerFrameRoleIcon:SetAlpha(0)
+    -- PlayerPrestigeBadge:SetAlpha(0)
+    -- PlayerPrestigePortrait:SetAlpha(0)
     PlayerPVPIcon:SetAlpha(0)
 
     PetFrame.feedbackText = feedbackText
