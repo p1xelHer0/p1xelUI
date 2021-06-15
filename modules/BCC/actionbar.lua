@@ -1,0 +1,273 @@
+local _, p1xelUI = ...
+local m = p1xelUI:CreateModule("Actionbar")
+
+local eventHandler = CreateFrame("Frame", nil, UIParent)
+eventHandler:SetScript("OnEvent", function(self, event, ...)
+    return self[event](self, ...)
+end)
+
+local hideArrows = false
+local hideXPBar = false
+
+local hideHotkeys = false
+local hideMacroNames = true
+
+function m:OnLoad()
+    local actionBarScale = 1
+
+    -- Hide artwork
+    MainMenuBarRightEndCap:Hide()
+    MainMenuBarLeftEndCap:Hide()
+
+    for i = 0, 3 do
+        _G["MainMenuBarTexture" .. i]:Hide()
+    end
+
+    StanceBarLeft:SetAlpha(0)
+    StanceBarRight:SetAlpha(0)
+    StanceBarMiddle:SetAlpha(0)
+    SlidingActionBarTexture0:SetAlpha(0)
+    SlidingActionBarTexture1:SetAlpha(0)
+
+    -- Move ActionBars
+    ActionButton1:ClearAllPoints()
+
+    -- Actual position of ActionBar is set in `MoveRelativeToEnabledBars`
+    ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, -314, 10)
+
+    -- Make ActionBars bigger
+    for i = 1, 12 do
+        _G["ActionButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarBottomLeftButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarBottomRightButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarLeftButton" .. i]:SetScale(actionBarScale)
+        _G["MultiBarRightButton" .. i]:SetScale(actionBarScale)
+    end
+
+    MainMenuBarBackpackButton:ClearAllPoints()
+    MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
+
+    for i = 0, 3 do
+      _G["CharacterBag".. i .. "Slot"]:ClearAllPoints()
+      _G["CharacterBag".. i .. "Slot"]:SetPoint("RIGHT", MainMenuBarBackpackButton, "LEFT", -37 * i, 0)
+    end
+
+    KeyRingButton:ClearAllPoints()
+    KeyRingButton:SetPoint("RIGHT", CharacterBag3Slot, "LEFT", 0, 0)
+
+    MainMenuBarPerformanceBar:ClearAllPoints()
+    MainMenuBarPerformanceBar:SetPoint("RIGHT", KeyRingButton, "LEFT", 0, 0)
+    MainMenuBarPerformanceBar:SetAlpha(0)
+
+    MainMenuBarPerformanceBarFrameButton:ClearAllPoints()
+    MainMenuBarPerformanceBarFrameButton:SetPoint("RIGHT", KeyRingButton, "LEFT", 0, 0)
+
+    CharacterMicroButton:ClearAllPoints()
+    CharacterMicroButton:SetPoint("BOTTOMRIGHT", KeyRingButton, "TOPLEFT", 23, -1)
+
+
+    MultiBarBottomLeftButton1:ClearAllPoints()
+    MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 6)
+
+    MultiBarBottomRightButton1:ClearAllPoints()
+
+    MultiBarBottomRightButton1:SetPoint("LEFT", ActionButton12, "CENTER", 23, 0)
+    MultiBarBottomRightButton7:ClearAllPoints()
+    MultiBarBottomRightButton7:SetPoint("LEFT", MultiBarBottomLeftButton12, "CENTER", 23, 0)
+
+    -- MainMenuBar blocks click action on some moved buttons
+    -- MainMenuBar:EnableMouse(false)
+
+    -- UIParent_ManageFramePosition will ignore a frame if it's user-placed
+    -- MultiBarBottomLeft:SetMovable(true)
+    -- MultiBarBottomLeft:SetUserPlaced(true)
+
+    -- Pet ActionBar
+    for i = 1, 10 do
+        local button = _G["PetActionButton" .. i]
+        button:ClearAllPoints()
+        if i == 1 then
+            -- Actual position of PetBar is set in `MoveRelativeToEnabledBars`
+            button:SetPoint("BOTTOMLEFT", ActionButton1, "BOTTOMLEFT", 0, 0)
+        else
+            -- Spacing of PetBars
+            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 4, 0)
+        end
+    end
+
+    -- Castbar
+    CastingBarFrame.ignoreFramePositionManager = true
+    CastingBarFrame:ClearAllPoints()
+    CastingBarFrame:SetPoint("BOTTOM", 0, 150)
+    CastingBarFrame:SetScale(1.2)
+
+    StanceButton1:ClearAllPoints()
+
+    -- Hide StanceBar texture when Bottom Left Bar is hidden
+    local sizeHook = false
+
+    -- Create textures for each Stance Button to make it look good
+    local function widthFunc(self)
+        if sizeHook then
+            return
+        end
+        sizeHook = true
+        self:SetWidth(52)
+        sizeHook = false
+    end
+
+    local function heightFunc(self)
+        if sizeHook then
+            return
+        end
+        sizeHook = true
+        self:SetHeight(52)
+        sizeHook = false
+    end
+
+    for i = 1, NUM_STANCE_SLOTS do
+        hooksecurefunc(_G["StanceButton" .. i]:GetNormalTexture(), "SetWidth", widthFunc)
+        hooksecurefunc(_G["StanceButton" .. i]:GetNormalTexture(), "SetHeight", heightFunc)
+        local button = _G["StanceButton" .. i]
+        button:ClearAllPoints()
+        if i == 1 then
+            -- StanceButton start
+            button:SetPoint("BOTTOMLEFT", ActionButton1, "BOTTOMLEFT", 0, 0)
+        else
+            -- Rest of Pet StanceButtons, space etc
+            button:SetPoint("LEFT", "StanceButton" .. i - 1, "RIGHT", 4, 0)
+        end
+    end
+
+    local function MoveRelativeToEnabledBars(index)
+        -- Move Main Action Bar to middle
+        local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -314 or -231
+
+        -- Move Pet X position if Bottom Right Bar is enabled
+        local petXPos = SHOW_MULTI_ACTIONBAR_2 and 159 * actionBarScale or 76 * actionBarScale
+
+        -- Move Pet Y position if Bottom Left Bar is enabled
+        local petYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+
+        -- Move Stance Y is Bottom Left Bar is enabled
+        local stanceYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+
+        if index == "PETACTIONBAR_YPOS" then
+            PetActionButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", petXPos, petYPos)
+            ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, mainBarXPos, 54)
+        elseif index == "StanceBarFrame" then
+            StanceButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOP", 10, stanceYPos)
+        end
+    end
+
+    -- Position ActionBars properly when enabling/disabling Extra ActionBars
+    hooksecurefunc("UIParent_ManageFramePosition", function(index)
+        if InCombatLockdown() then
+            return
+        end
+
+        MoveRelativeToEnabledBars(index)
+    end)
+
+    self.buttons = {}
+    for i = 1, 12 do
+        tinsert(self.buttons, _G["ActionButton" .. i])
+        tinsert(self.buttons, _G["MultiBarBottomLeftButton" .. i])
+        tinsert(self.buttons, _G["MultiBarBottomRightButton" .. i])
+        tinsert(self.buttons, _G["MultiBarLeftButton" .. i])
+        tinsert(self.buttons, _G["MultiBarRightButton" .. i])
+    end
+
+    local function updateHotkeys(self)
+        if (hideHotkeys) then
+            self.HotKey:Hide(hideHotkeys)
+        end
+    end
+
+    for _, button in pairs(self.buttons) do
+        -- hooksecurefunc(button, "UpdateHotkeys", updateHotkeys)
+    end
+
+    hooksecurefunc("ActionButton_UpdateRangeIndicator", updateHotkeys)
+    hooksecurefunc("PetActionButton_SetHotkeys", updateHotkeys)
+
+    -- _G["MultiBarBottomRightButton5"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton6"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton11"]:SetAlpha(0)
+    -- _G["MultiBarBottomRightButton12"]:SetAlpha(0)
+
+    self:HideXPBar(hideXPBar)
+    self:HideArrows(hideArrows)
+    self:HideHotkeys(hideHotkeys)
+    self:HideMacroNames(hideMacroNames)
+    self:HideMicroMenuAndBags()
+end
+
+function eventHandler:PLAYER_LOGIN()
+    if InCombatLockdown() then
+        return
+    end
+
+    -- moving the bar here because PLAYER_LOGIN is called after layout-local.txt settings
+    MultiBarBottomLeft:ClearAllPoints()
+    MultiBarBottomLeft:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", 0, 6)
+end
+
+function m:HideXPBar(hide)
+    -- StatusTrackingBarManager:SetAlpha(hide and 0 or 1)
+    -- MainMenuBarArtFrameBackground:SetPoint("BOTTOM", hide and UIParent or MainMenuBar, 0, hide and 3 or 0)
+end
+
+function m:HideArrows(hide)
+    -- ActionBarDownButton:SetAlpha(hide and 0 or 1)
+    -- ActionBarUpButton:SetAlpha(hide and 0 or 1)
+
+    ActionBarUpButton:ClearAllPoints()
+    ActionBarUpButton:SetPoint("RIGHT", ActionButton1, "LEFT", 0, 10)
+
+    ActionBarDownButton:ClearAllPoints()
+    ActionBarDownButton:SetPoint("TOP", ActionBarUpButton, "BOTTOM", 0, 9)
+
+    MainMenuBarPageNumber:ClearAllPoints()
+    MainMenuBarPageNumber:SetPoint("TOPRIGHT", ActionBarUpButton, "LEFT", 0, -4)
+end
+
+function m:HideHotkeys(hide)
+    for _, button in ipairs(self.buttons) do
+        -- button:UpdateHotkeys(button.buttonType)
+    end
+    for i = 1, 10 do
+        -- PetActionButton_SetHotkeys(_G["PetActionButton" .. i])
+    end
+end
+
+function m:HideMacroNames(hide)
+    for _, button in ipairs(self.buttons) do
+        button.Name:SetShown(not hide)
+    end
+end
+
+function m:HideMicroMenuAndBags()
+    local showOnHover = {"MainMenuBarBackpackButton", "CharacterBag0Slot",
+                         "CharacterBag1Slot", "CharacterBag2Slot", "CharacterBag3Slot", 
+                         "KeyRingButton", "CharacterMicroButton","SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "SocialsMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
+
+    local function showElement(self)
+        for _, v in ipairs(showOnHover) do
+            _G[v]:SetAlpha(100)
+        end
+    end
+
+    local function hideElement(self)
+        for _, v in ipairs(showOnHover) do
+            _G[v]:SetAlpha(0)
+        end
+    end
+
+    for _, v in ipairs(showOnHover) do
+        v = _G[v]
+        v:SetScript("OnEnter", showElement)
+        v:SetScript("OnLeave", hideElement)
+        v:SetAlpha(0)
+    end
+end

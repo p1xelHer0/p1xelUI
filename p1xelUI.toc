@@ -1,6 +1,5 @@
 ## Interface: 90002
 ## Title: p1xelUI
-## RequiredDeps: ElvUI
 ## Notes: Media, tags and other shit for ElvUI
 
 p1xelUI.xml
