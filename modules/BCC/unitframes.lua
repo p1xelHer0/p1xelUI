@@ -18,16 +18,14 @@ function m:SetupUnitframes()
     local ToTX = -100
     local ToTY = 11
 
-    local frameScale = 1.23
+    local frameScale = 1.17
     local castbarScale = 1.29
 
     -- Player
     PlayerFrame:ClearAllPoints()
     PlayerFrame:SetPoint("CENTER", -520, 220)
-    PlayerFrame:SetUserPlaced(false)
+    PlayerFrame:SetUserPlaced(true)
     PlayerFrame:SetScale(frameScale)
-    PlayerFrame.SetPoint = function()
-    end
 
     -- Feedback text
     local feedbackText = PlayerFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
@@ -38,9 +36,6 @@ function m:SetupUnitframes()
     PetHitIndicator:Hide()
     PlayerFrame.name:SetAlpha(0)
     PlayerFrameGroupIndicator:SetAlpha(0)
-    -- PlayerFrameRoleIcon:SetAlpha(0)
-    -- PlayerPrestigeBadge:SetAlpha(0)
-    -- PlayerPrestigePortrait:SetAlpha(0)
     PlayerPVPIcon:SetAlpha(0)
 
     PetFrame.feedbackText = feedbackText
@@ -51,41 +46,33 @@ function m:SetupUnitframes()
     TargetFrame:ClearAllPoints()
     TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
     TargetFrame:SetScale(frameScale)
-    TargetFrame:SetUserPlaced(false)
+    TargetFrame:SetUserPlaced(true)
     -- TargetFrame.name:SetAlpha(0)
     TargetFrameSpellBar:SetScale(castbarScale)
     TargetFrameTextureFramePVPIcon:SetAlpha(0)
     TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
     TargetFrameTextureFramePrestigePortrait:SetAlpha(0)
-    TargetFrame.SetPoint = function()
-    end
 
     -- Target of Target
     TargetFrameToT:ClearAllPoints()
     TargetFrameToT:SetPoint("LEFT", TargetFrame, "BOTTOMRIGHT", ToTX, ToTY)
     TargetFrameToT.name:SetAlpha(0)
-    TargetFrameToT.SetPoint = function()
-    end
 
     -- Focus
     FocusFrame:ClearAllPoints()
     FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -130)
     FocusFrame:SetScale(frameScale)
-    FocusFrame:SetUserPlaced(false)
+    FocusFrame:SetUserPlaced(true)
     -- FocusFrame.name:SetAlpha(0)
     FocusFrameSpellBar:SetScale(castbarScale)
     FocusFrameTextureFramePVPIcon:SetAlpha(0)
     FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
     FocusFrameTextureFramePrestigePortrait:SetAlpha(0)
-    FocusFrame.SetPoint = function()
-    end
 
     -- Target of Focus
     FocusFrameToT:ClearAllPoints()
     FocusFrameToT:SetPoint("LEFT", FocusFrame, "BOTTOMRIGHT", ToTX, ToTY)
     FocusFrameToT.name:SetAlpha(0)
-    FocusFrameToT.SetPoint = function()
-    end
 end
 
 function m:EnableClassColorStatusBar()
@@ -153,10 +140,10 @@ function m:EnableClassColorNameBackground()
 end
 
 -- Combat indicator
-local combatIndicatorX = 62
-local combatIndicatorY = -17
+local combatIndicatorX = 63
+local combatIndicatorY = -16
 local combatIndicatorScale = 1
-local combatIndicatorSize = 30
+local combatIndicatorSize = 27
 local combatIndicatorIcon = "Interface\\PlayerFrame\\Deathknight-Energize-Blood"
 
 m.TargetCombatIndicator = CreateFrame("Frame", nil, TargetFrame)

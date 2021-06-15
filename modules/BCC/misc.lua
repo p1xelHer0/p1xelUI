@@ -11,6 +11,7 @@ function m:OnLoad()
     self:SetCVars()
     self:SetupBuffs()
     self:SetupGameTooltip()
+    self:SetupNamePlates()
     self:SetupRaidFrames()
     self:SetupMinimap()
     self:MouseOverElements()
@@ -75,7 +76,7 @@ end
 function m:SetupBuffs()
     local function MoveBuffs()
         BuffFrame:ClearAllPoints()
-        BuffFrame:SetPoint("TOP", 480, -80)
+        BuffFrame:SetPoint("CENTER", 420, 220)
         BuffFrame:SetScale(1.2)
     end
 
@@ -84,20 +85,14 @@ function m:SetupBuffs()
     MoveBuffs()
 end
 
-local function friendlyNamePlates()
-    C_NamePlate.SetNamePlateFriendlySize(60, 60)
-end
-
 function m:SetupNamePlates()
-    -- Smaller friendly NamePlates
-    friendlyNamePlates()
-
-    -- Arena target 1 / 2 / 3 inside Arena
+    -- Arena target 1 / 2 / 3 / 4 / 5 inside arena
     hooksecurefunc("CompactUnitFrame_UpdateName", function(nameplate)
         if IsActiveBattlefieldArena() and nameplate.unit:find("nameplate") then
             for i = 1, 5 do
                 if UnitIsUnit(nameplate.unit, "arena" .. i) then
                     nameplate.name:SetText(i)
+                    nameplate.name:SetScale(1.5)
                     nameplate.name:SetTextColor(1, 1, 0)
                     break
                 end
@@ -109,13 +104,13 @@ function m:SetupNamePlates()
 end
 
 function eventHandler:NAME_PLATE_UNIT_ADDED()
-    friendlyNamePlates()
 end
 
 function m:SetupGameTooltip()
     local function FixGameTooltip()
         -- Don't move tooltip to the left when enabling Right Bars
         CONTAINER_OFFSET_X = 0
+        CONTAINER_OFFSET_Y = 20
     end
 
     hooksecurefunc("UIParent_ManageFramePosition", function(index)
@@ -137,8 +132,8 @@ function m:SetupRaidFrames()
             if frame_name and frame_name:match("^CompactRaidFrame%d") and frame.unit and frame.name then
                 local unit_name = GetUnitName(frame.unit, true)
                 if unit_name then
-                    frame.name:SetText(unit_name:match("[^-]+"))
-                    -- frame.name:SetText("")
+                    -- frame.name:SetText(unit_name:match("[^-]+"))
+                    frame.name:SetText("")
                 end
             end
         end

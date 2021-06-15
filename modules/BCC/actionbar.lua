@@ -6,10 +6,9 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, ...)
 end)
 
-local hideArrows = false
-local hideXPBar = false
+local hideArrows = true
 
-local hideHotkeys = false
+local hideHotkeys = true
 local hideMacroNames = true
 
 function m:OnLoad()
@@ -91,14 +90,14 @@ function m:OnLoad()
             button:SetPoint("BOTTOMLEFT", ActionButton1, "BOTTOMLEFT", 0, 0)
         else
             -- Spacing of PetBars
-            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 4, 0)
+            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 5, 0)
         end
     end
 
     -- Castbar
     CastingBarFrame.ignoreFramePositionManager = true
     CastingBarFrame:ClearAllPoints()
-    CastingBarFrame:SetPoint("BOTTOM", 0, 150)
+    CastingBarFrame:SetPoint("BOTTOM", 0, 260)
     CastingBarFrame:SetScale(1.2)
 
     StanceButton1:ClearAllPoints()
@@ -141,16 +140,20 @@ function m:OnLoad()
 
     local function MoveRelativeToEnabledBars(index)
         -- Move Main Action Bar to middle
-        local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -314 or -231
+        local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -315 or -231
 
         -- Move Pet X position if Bottom Right Bar is enabled
-        local petXPos = SHOW_MULTI_ACTIONBAR_2 and 159 * actionBarScale or 76 * actionBarScale
+        local petXPos = SHOW_MULTI_ACTIONBAR_1 and SHOW_MULTI_ACTIONBAR_2 and 161 * actionBarScale or 77 * actionBarScale
 
         -- Move Pet Y position if Bottom Left Bar is enabled
-        local petYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+        local petYPos = SHOW_MULTI_ACTIONBAR_1 and 53 * actionBarScale or 10 * actionBarScale
 
         -- Move Stance Y is Bottom Left Bar is enabled
         local stanceYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+
+        local xpBarScale = SHOW_MULTI_ACTIONBAR_2 and 0.65 or 0.49
+
+        MainMenuExpBar:SetScale(xpBarScale)
 
         if index == "PETACTIONBAR_YPOS" then
             PetActionButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", petXPos, petYPos)
@@ -191,16 +194,17 @@ function m:OnLoad()
     hooksecurefunc("ActionButton_UpdateRangeIndicator", updateHotkeys)
     hooksecurefunc("PetActionButton_SetHotkeys", updateHotkeys)
 
-    -- _G["MultiBarBottomRightButton5"]:SetAlpha(0)
-    -- _G["MultiBarBottomRightButton6"]:SetAlpha(0)
-    -- _G["MultiBarBottomRightButton11"]:SetAlpha(0)
-    -- _G["MultiBarBottomRightButton12"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton5"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton6"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton11"]:SetAlpha(0)
+    _G["MultiBarBottomRightButton12"]:SetAlpha(0)
 
-    self:HideXPBar(hideXPBar)
     self:HideArrows(hideArrows)
     self:HideHotkeys(hideHotkeys)
     self:HideMacroNames(hideMacroNames)
     self:HideMicroMenuAndBags()
+    self:HideExtraActionBars()
+    self:HideXPBar()
 end
 
 function eventHandler:PLAYER_LOGIN()
@@ -213,14 +217,10 @@ function eventHandler:PLAYER_LOGIN()
     MultiBarBottomLeft:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", 0, 6)
 end
 
-function m:HideXPBar(hide)
-    -- StatusTrackingBarManager:SetAlpha(hide and 0 or 1)
-    -- MainMenuBarArtFrameBackground:SetPoint("BOTTOM", hide and UIParent or MainMenuBar, 0, hide and 3 or 0)
-end
-
 function m:HideArrows(hide)
-    -- ActionBarDownButton:SetAlpha(hide and 0 or 1)
-    -- ActionBarUpButton:SetAlpha(hide and 0 or 1)
+    ActionBarDownButton:SetAlpha(hide and 0 or 1)
+    ActionBarUpButton:SetAlpha(hide and 0 or 1)
+    MainMenuBarPageNumber:SetAlpha(hide and 0 or 1)
 
     ActionBarUpButton:ClearAllPoints()
     ActionBarUpButton:SetPoint("RIGHT", ActionButton1, "LEFT", 0, 10)
@@ -251,6 +251,55 @@ function m:HideMicroMenuAndBags()
     local showOnHover = {"MainMenuBarBackpackButton", "CharacterBag0Slot",
                          "CharacterBag1Slot", "CharacterBag2Slot", "CharacterBag3Slot", 
                          "KeyRingButton", "CharacterMicroButton","SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "SocialsMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
+
+    local function showElement(self)
+        for _, v in ipairs(showOnHover) do
+            _G[v]:SetAlpha(100)
+        end
+    end
+
+    local function hideElement(self)
+        for _, v in ipairs(showOnHover) do
+            _G[v]:SetAlpha(0)
+        end
+    end
+
+    for _, v in ipairs(showOnHover) do
+        v = _G[v]
+        v:SetScript("OnEnter", showElement)
+        v:SetScript("OnLeave", hideElement)
+        v:SetAlpha(0)
+    end
+end
+
+function m:HideExtraActionBars()
+    local showOnHover = {
+      "MultiBarLeftButton1", "MultiBarLeftButton2", "MultiBarLeftButton3", "MultiBarLeftButton4", "MultiBarLeftButton5", "MultiBarLeftButton6", "MultiBarLeftButton7", "MultiBarLeftButton8", "MultiBarLeftButton9", "MultiBarLeftButton10", "MultiBarLeftButton11", "MultiBarLeftButton12",
+      "MultiBarRightButton1", "MultiBarRightButton2", "MultiBarRightButton3", "MultiBarRightButton4", "MultiBarRightButton5", "MultiBarRightButton6", "MultiBarRightButton7", "MultiBarRightButton8", "MultiBarRightButton9", "MultiBarRightButton10", "MultiBarRightButton11", "MultiBarRightButton12"
+    }
+
+    local function showElement(self)
+        for _, v in ipairs(showOnHover) do
+            _G[v]:SetAlpha(100)
+        end
+    end
+
+    local function hideElement(self)
+        for _, v in ipairs(showOnHover) do
+            _G[v]:SetAlpha(0)
+        end
+    end
+
+    for _, v in ipairs(showOnHover) do
+        v = _G[v]
+        v:SetScript("OnEnter", showElement)
+        v:SetScript("OnLeave", hideElement)
+        v:SetAlpha(0)
+    end
+end
+
+function m:HideXPBar()
+    local showOnHover = {"MainMenuExpBar"}
 
     local function showElement(self)
         for _, v in ipairs(showOnHover) do
