@@ -15,10 +15,11 @@ function m:OnLoad()
     self:SetupRaidFrames()
     self:SetupMinimap()
     self:MouseOverElements()
+    self:StyleLayerFrame()
 end
 
 function m:Misc()
-    UIErrorsFrame:Hide()
+    -- UIErrorsFrame:Hide()
 end
 
 function m:SetCVars()
@@ -110,7 +111,7 @@ function m:SetupGameTooltip()
     local function FixGameTooltip()
         -- Don't move tooltip to the left when enabling Right Bars
         CONTAINER_OFFSET_X = 0
-        CONTAINER_OFFSET_Y = 20
+        CONTAINER_OFFSET_Y = 160
     end
 
     hooksecurefunc("UIParent_ManageFramePosition", function(index)
@@ -179,4 +180,9 @@ function m:MouseOverElements()
         element:HookScript("OnLeave", hideElement)
         element:SetAlpha(0)
     end
+end
+
+function m:StyleLayerFrame()
+  MinimapLayerFrame:ClearAllPoints()
+  MinimapLayerFrame:SetPoint("BOTTOM", MinimapBorder, "TOP", 8, -10)
 end

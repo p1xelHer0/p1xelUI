@@ -8,8 +8,8 @@ end)
 
 local hideArrows = true
 
-local hideHotkeys = true
-local hideMacroNames = true
+local hideHotkeys = false
+local hideMacroNames = false
 
 function m:OnLoad()
     local actionBarScale = 1
@@ -20,6 +20,7 @@ function m:OnLoad()
 
     for i = 0, 3 do
         _G["MainMenuBarTexture" .. i]:Hide()
+        _G["MainMenuMaxLevelBar" .. i]:Hide()
     end
 
     StanceBarLeft:SetAlpha(0)
@@ -154,6 +155,7 @@ function m:OnLoad()
         local xpBarScale = SHOW_MULTI_ACTIONBAR_2 and 0.65 or 0.49
 
         MainMenuExpBar:SetScale(xpBarScale)
+        ReputationWatchBar.StatusBar:SetScale(xpBarScale)
 
         if index == "PETACTIONBAR_YPOS" then
             PetActionButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", petXPos, petYPos)
@@ -274,8 +276,9 @@ end
 
 function m:HideExtraActionBars()
     local showOnHover = {
-      "MultiBarLeftButton1", "MultiBarLeftButton2", "MultiBarLeftButton3", "MultiBarLeftButton4", "MultiBarLeftButton5", "MultiBarLeftButton6", "MultiBarLeftButton7", "MultiBarLeftButton8", "MultiBarLeftButton9", "MultiBarLeftButton10", "MultiBarLeftButton11", "MultiBarLeftButton12",
-      "MultiBarRightButton1", "MultiBarRightButton2", "MultiBarRightButton3", "MultiBarRightButton4", "MultiBarRightButton5", "MultiBarRightButton6", "MultiBarRightButton7", "MultiBarRightButton8", "MultiBarRightButton9", "MultiBarRightButton10", "MultiBarRightButton11", "MultiBarRightButton12"
+      -- "MultiBarLeft", "MultiBarRight",
+      -- "MultiBarLeftButton1", "MultiBarLeftButton2", "MultiBarLeftButton3", "MultiBarLeftButton4", "MultiBarLeftButton5", "MultiBarLeftButton6", "MultiBarLeftButton7", "MultiBarLeftButton8", "MultiBarLeftButton9", "MultiBarLeftButton10", "MultiBarLeftButton11", "MultiBarLeftButton12",
+      -- "MultiBarRightButton1", "MultiBarRightButton2", "MultiBarRightButton3", "MultiBarRightButton4", "MultiBarRightButton5", "MultiBarRightButton6", "MultiBarRightButton7", "MultiBarRightButton8", "MultiBarRightButton9", "MultiBarRightButton10", "MultiBarRightButton11", "MultiBarRightButton12"
     }
 
     local function showElement(self)

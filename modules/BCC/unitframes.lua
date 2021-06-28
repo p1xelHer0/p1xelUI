@@ -11,6 +11,7 @@ function m:OnLoad()
     self:EnableClassColorStatusBar()
     self:EnableClassColorNameBackground()
     self:EnableCombatIndicator()
+    -- self:RemoveTargetLevel()
     -- self:EnableBigBuffs()
 end
 
@@ -103,6 +104,15 @@ function m.ColorStatusbar(statusbar, unit)
     end
 end
 
+-- function m:RemoveTargetLevel()
+--   hooksecurefunc("TargetFrame_Update", function()
+--     TargetFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
+--     TargetFrameTextureFrameLevelText:SetAlpha(0)
+--     FocusFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
+--     FocusFrameTextureFrameLevelText:SetAlpha(0)
+--   end)
+-- end
+
 function m:EnableClassColorNameBackground()
     local eventHandler = CreateFrame("FRAME", nil, UIParent)
     eventHandler:RegisterEvent("GROUP_ROSTER_UPDATE")
@@ -140,11 +150,11 @@ function m:EnableClassColorNameBackground()
 end
 
 -- Combat indicator
-local combatIndicatorX = 63
-local combatIndicatorY = -16
+local combatIndicatorX = 64
+local combatIndicatorY = -15
 local combatIndicatorScale = 1
-local combatIndicatorSize = 27
-local combatIndicatorIcon = "Interface\\PlayerFrame\\Deathknight-Energize-Blood"
+local combatIndicatorSize = 32
+local combatIndicatorIcon = "Interface\\CharacterFrame\\UI-StateIcon"
 
 m.TargetCombatIndicator = CreateFrame("Frame", nil, TargetFrame)
 m.TargetCombatIndicator:SetParent(TargetFrame)
@@ -154,6 +164,7 @@ m.TargetCombatIndicator:SetScale(combatIndicatorScale)
 m.TargetCombatIndicator.icon = m.TargetCombatIndicator:CreateTexture(nil, "BORDER")
 m.TargetCombatIndicator.icon:SetAllPoints()
 m.TargetCombatIndicator.icon:SetTexture(combatIndicatorIcon)
+m.TargetCombatIndicator.icon:SetTexCoord(0.5, 1.0, 0, 0.5)
 m.TargetCombatIndicator:Hide()
 
 m.FocusCombatIndicator = CreateFrame("Frame", nil, FocusFrame)
@@ -164,6 +175,7 @@ m.FocusCombatIndicator:SetScale(combatIndicatorScale)
 m.FocusCombatIndicator.icon = m.FocusCombatIndicator:CreateTexture(nil, "BORDER")
 m.FocusCombatIndicator.icon:SetAllPoints()
 m.FocusCombatIndicator.icon:SetTexture(combatIndicatorIcon)
+m.FocusCombatIndicator.icon:SetTexCoord(0.5, 1.0, 0, 0.5)
 m.FocusCombatIndicator:Hide()
 
 m.combatIndicatorElapsed = 0
