@@ -9,7 +9,7 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 end)
 
 function m:OnLoad()
-    self:ElvUITags()
+    -- self:ElvUITags()
 end
 
 function m:ElvUITags()

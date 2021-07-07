@@ -12,7 +12,7 @@ local hideHotkeys = false
 local hideMacroNames = false
 
 function m:OnLoad()
-    local actionBarScale = 1
+    local actionBarScale = 1.0
 
     -- Hide artwork
     MainMenuBarRightEndCap:Hide()

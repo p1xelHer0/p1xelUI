@@ -9,8 +9,8 @@ end)
 local hideArrows = true
 local hideXPBar = true
 
-local hideHotkeys = false
-local hideMacroNames = false
+local hideHotkeys = true
+local hideMacroNames = true
 
 function m:OnLoad()
     local actionBarScale = 1.0
@@ -79,7 +79,7 @@ function m:OnLoad()
             button:SetPoint("BOTTOMLEFT", ActionButton1, "BOTTOMLEFT", 0, 0)
         else
             -- Spacing of PetBars
-            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 4, 0)
+            button:SetPoint("LEFT", "PetActionButton" .. i - 1, "RIGHT", 5, 0)
         end
     end
 
@@ -141,13 +141,13 @@ function m:OnLoad()
 
     local function MoveRelativeToEnabledBars(index)
         -- Move Main Action Bar to middle
-        local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -314 or -231
+        local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -315 or -231
 
         -- Move Pet X position if Bottom Right Bar is enabled
-        local petXPos = SHOW_MULTI_ACTIONBAR_2 and 159 * actionBarScale or 76 * actionBarScale
+        local petXPos = SHOW_MULTI_ACTIONBAR_1 and SHOW_MULTI_ACTIONBAR_2 and 161 * actionBarScale or 77 * actionBarScale
 
         -- Move Pet Y position if Bottom Left Bar is enabled
-        local petYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+        local petYPos = SHOW_MULTI_ACTIONBAR_1 and 53 * actionBarScale or 10 * actionBarScale
 
         -- Move Stance Y is Bottom Left Bar is enabled
         local stanceYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
