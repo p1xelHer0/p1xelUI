@@ -77,7 +77,7 @@ end
 function m:SetupBuffs()
     local function MoveBuffs()
         BuffFrame:ClearAllPoints()
-        BuffFrame:SetPoint("TOP", 480, -80)
+        BuffFrame:SetPoint("CENTER", 420, 220)
         BuffFrame:SetScale(1.2)
     end
 

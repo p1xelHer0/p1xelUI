@@ -18,7 +18,7 @@ function m:SetupUnitframes()
     local ToTX = -100
     local ToTY = 11
 
-    local frameScale = 1.23
+    local frameScale = 1.17
     local castbarScale = 1.29
 
     -- Player
