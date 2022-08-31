@@ -1,0 +1,6 @@
+<Ui>
+  <Script file="p1xelUI.lua"/>
+  <Script file="modules\TBC\misc.lua"/>
+  <Script file="modules\TBC\sharedmedia.lua"/>
+  <Script file="modules\TBC\tags.lua"/>
+</Ui>

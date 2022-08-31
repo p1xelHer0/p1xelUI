@@ -1,0 +1,6 @@
+<Ui>
+  <Script file="p1xelUI.lua"/>
+  <Script file="modules\Wrath\misc.lua"/>
+  <Script file="modules\Wrath\sharedmedia.lua"/>
+  <Script file="modules\Wrath\tags.lua"/>
+</Ui>
