@@ -60,13 +60,14 @@ function m:SetCVars()
     SetCVar("nameplateMinAlpha", 0.7)
     SetCVar("nameplateMinAlphaDistance", 100)
     SetCVar("nameplateOccludedAlphaMult", 0.5)
+    SetCVar("nameplateSelectedScale", 1.2)
     SetCVar("nameplateShowAll", 1)
     SetCVar("nameplateShowEnemyGuardians", 1)
     SetCVar("nameplateShowEnemyMinions", 1)
     SetCVar("nameplateShowEnemyPets", 1)
     SetCVar("nameplateShowEnemyTotems", 1)
     SetCVar("nameplateTargetBehindMaxDistance", 30)
-    SetCVar("ShowClassColorInFriendlyNameplate", 1)
+    SetCVar("ShowClassColorInFriendlyNameplate", 0)
 
     SetCVar("noBuffDebuffFilterOnTarget", 1)
     SetCVar("showTargetOfTarget", 1)
@@ -76,9 +77,15 @@ end
 
 function m:SetupBuffs()
     local function MoveBuffs()
+        local buffX = 420
+        local buffY = 220
         BuffFrame:ClearAllPoints()
-        BuffFrame:SetPoint("CENTER", 420, 220)
+        BuffFrame:SetPoint("CENTER", buffX, buffY)
         BuffFrame:SetScale(1.2)
+
+        TemporaryEnchantFrame:ClearAllPoints()
+        TemporaryEnchantFrame:SetPoint("CENTER", buffX + 8, buffY + 8)
+        TemporaryEnchantFrame:SetScale(1.2)
     end
 
     hooksecurefunc("UIParent_UpdateTopFramePositions", MoveBuffs)
@@ -87,6 +94,10 @@ function m:SetupBuffs()
 end
 
 local function friendlyNamePlates()
+    if InCombatLockdown() then
+        return
+    end
+
     C_NamePlate.SetNamePlateFriendlySize(60, 60)
 end
 
@@ -96,13 +107,29 @@ function m:SetupNamePlates()
 
     -- Arena target 1 / 2 / 3 inside Arena
     hooksecurefunc("CompactUnitFrame_UpdateName", function(nameplate)
-        if IsActiveBattlefieldArena() and nameplate.unit:find("nameplate") then
-            for i = 1, 5 do
-                if UnitIsUnit(nameplate.unit, "arena" .. i) then
-                    nameplate.name:SetText(i)
-                    nameplate.name:SetTextColor(1, 1, 0)
-                    break
+        if InCombatLockdown() then
+            return
+        end
+
+        local isNameplate = nameplate.unit:find("nameplate")
+
+        if isNameplate then
+            if IsActiveBattlefieldArena() then
+                for i = 1, 5 do
+                    if UnitIsUnit(nameplate.unit, "arena" .. i) then
+                        nameplate.name:SetText(i)
+                        nameplate.name:SetTextColor(1, 1, 0)
+                        break
+                    end
                 end
+            end
+
+            -- Class colored names for friendly units instead of healthbar
+            if UnitIsFriend("player", nameplate.unit) and UnitIsPlayer(nameplate.unit) and isNameplate then
+                local color = RAID_CLASS_COLORS[select(2, UnitClass(nameplate.unit))]
+                local unit_name = GetUnitName(nameplate.unit, true)
+                nameplate.name:SetVertexColor(color.r, color.g, color.b)
+                nameplate.name:SetText(unit_name:match("[^-]+"))
             end
         end
     end)
@@ -117,7 +144,7 @@ end
 function m:SetupGameTooltip()
     local function FixGameTooltip()
         -- Don't move tooltip to the left when enabling Right Bars
-        CONTAINER_OFFSET_X = 0
+        -- CONTAINER_OFFSET_X = 0
     end
 
     hooksecurefunc("UIParent_ManageFramePosition", function(index)
@@ -139,8 +166,8 @@ function m:SetupRaidFrames()
             if frame_name and frame_name:match("^CompactRaidFrame%d") and frame.unit and frame.name then
                 local unit_name = GetUnitName(frame.unit, true)
                 if unit_name then
-                    frame.name:SetText(unit_name:match("[^-]+"))
-                    -- frame.name:SetText("")
+                    -- frame.name:SetText(unit_name:match("[^-]+"))
+                    frame.name:SetText("")
                 end
             end
         end
@@ -148,6 +175,15 @@ function m:SetupRaidFrames()
 end
 
 function m:SetupMinimap()
+    Minimap:EnableMouseWheel(true)
+    Minimap:SetScript('OnMouseWheel', function(_, delta)
+        if delta > 0 then
+            Minimap_ZoomIn()
+        else
+            Minimap_ZoomOut()
+        end
+    end)
+
     MinimapZoomIn:Hide()
     MinimapZoomOut:Hide()
     MinimapBorderTop:Hide()
@@ -157,15 +193,10 @@ function m:SetupMinimap()
     MinimapNorthTag:SetAlpha(0)
     GameTimeFrame:SetAlpha(0)
     MiniMapTracking:SetAlpha(0)
-
-    Minimap:EnableMouseWheel(true)
-    Minimap:SetScript('OnMouseWheel', function(_, delta)
-        if delta > 0 then
-            Minimap_ZoomIn()
-        else
-            Minimap_ZoomOut()
-        end
-    end)
+    LoadAddOn("Blizzard_TimeManager")
+    local region = TimeManagerClockButton:GetRegions()
+    region:Hide()
+    TimeManagerClockButton:Hide()
 end
 
 function m:MouseOverElements()

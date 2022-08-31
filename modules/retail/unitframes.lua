@@ -11,7 +11,9 @@ function m:OnLoad()
     self:EnableClassColorStatusBar()
     self:EnableClassColorNameBackground()
     self:EnableCombatIndicator()
+    self:ColorTooltipName()
     -- self:EnableBigBuffs()
+    self:RemoveTargetLevel()
 end
 
 function m:SetupUnitframes()
@@ -24,17 +26,15 @@ function m:SetupUnitframes()
     -- Player
     PlayerFrame:ClearAllPoints()
     PlayerFrame:SetPoint("CENTER", -520, 220)
-    PlayerFrame:SetUserPlaced(false)
+    PlayerFrame:SetUserPlaced(true)
     PlayerFrame:SetScale(frameScale)
-    PlayerFrame.SetPoint = function()
-    end
 
     -- Feedback text
     local feedbackText = PlayerFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
     PlayerFrame.feedbackText = feedbackText
     PlayerFrame.feedbackStartTime = 0
     PlayerHitIndicator:Hide()
-    PlayerLeaderIcon:Hide()
+    PlayerLeaderIcon:SetAlpha(0)
     PetHitIndicator:Hide()
     PlayerFrame.name:SetAlpha(0)
     PlayerFrameGroupIndicator:SetAlpha(0)
@@ -51,41 +51,50 @@ function m:SetupUnitframes()
     TargetFrame:ClearAllPoints()
     TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
     TargetFrame:SetScale(frameScale)
-    TargetFrame:SetUserPlaced(false)
-    -- TargetFrame.name:SetAlpha(0)
+    TargetFrame:SetUserPlaced(true)
     TargetFrameSpellBar:SetScale(castbarScale)
     TargetFrameTextureFramePVPIcon:SetAlpha(0)
     TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
     TargetFrameTextureFramePrestigePortrait:SetAlpha(0)
-    TargetFrame.SetPoint = function()
-    end
+    TargetFrameTextureFrameLeaderIcon:SetAlpha(0)
 
     -- Target of Target
     TargetFrameToT:ClearAllPoints()
     TargetFrameToT:SetPoint("LEFT", TargetFrame, "BOTTOMRIGHT", ToTX, ToTY)
     TargetFrameToT.name:SetAlpha(0)
-    TargetFrameToT.SetPoint = function()
-    end
 
     -- Focus
     FocusFrame:ClearAllPoints()
-    FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -130)
+    FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -129)
     FocusFrame:SetScale(frameScale)
-    FocusFrame:SetUserPlaced(false)
+    FocusFrame:SetUserPlaced(true)
     -- FocusFrame.name:SetAlpha(0)
     FocusFrameSpellBar:SetScale(castbarScale)
     FocusFrameTextureFramePVPIcon:SetAlpha(0)
     FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
     FocusFrameTextureFramePrestigePortrait:SetAlpha(0)
-    FocusFrame.SetPoint = function()
-    end
+    FocusFrameTextureFrameLeaderIcon:SetAlpha(0)
 
     -- Target of Focus
     FocusFrameToT:ClearAllPoints()
     FocusFrameToT:SetPoint("LEFT", FocusFrame, "BOTTOMRIGHT", ToTX, ToTY)
     FocusFrameToT.name:SetAlpha(0)
-    FocusFrameToT.SetPoint = function()
-    end
+end
+
+function m:RemoveTargetLevel()
+    hooksecurefunc("TargetFrame_Update", function(target)
+        if (UnitLevel(target.unit) == 60) and UnitIsPlayer(target.unit) then
+            TargetFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
+            TargetFrameTextureFrameLevelText:SetAlpha(0)
+            FocusFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
+            FocusFrameTextureFrameLevelText:SetAlpha(0)
+        else
+            TargetFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame")
+            TargetFrameTextureFrameLevelText:SetAlpha(100)
+            FocusFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame")
+            FocusFrameTextureFrameLevelText:SetAlpha(100)
+        end
+    end)
 end
 
 function m:EnableClassColorStatusBar()
@@ -106,14 +115,29 @@ local UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS = UnitIsPlayer
     RAID_CLASS_COLORS
 local _, class, c
 
+-- ClassColor statusbar for Tooltip and TargetofTargets
 function m.ColorStatusbar(statusbar, unit)
     if UnitIsPlayer(unit) and UnitIsConnected(unit) and UnitClass(unit) then
-        if unit == statusbar.unit or statusbar == isTooltipStatusBar then
+        if unit == "targettarget" or unit == "focus-target" then
             _, class = UnitClass(unit)
             c = RAID_CLASS_COLORS[class]
             statusbar:SetStatusBarColor(c.r, c.g, c.b)
         end
     end
+end
+
+function m.ColorTooltipName()
+  GameTooltip:HookScript("OnTooltipSetUnit", function(GameTooltip)
+	local _, unit = GameTooltip:GetUnit()
+	if UnitIsPlayer(unit) then
+		local _, class = UnitClass(unit)
+		local color = class and (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+		if color then
+			local text = GameTooltipTextLeft1:GetText()
+			GameTooltipTextLeft1:SetFormattedText("|cff%02x%02x%02x%s|r", color.r * 255, color.g * 255, color.b * 255, text:match("|cff\x\x\x\x\x\x(.+)|r") or text)
+		end
+	end
+    end)
 end
 
 function m:EnableClassColorNameBackground()
@@ -153,11 +177,11 @@ function m:EnableClassColorNameBackground()
 end
 
 -- Combat indicator
-local combatIndicatorX = 62
-local combatIndicatorY = -17
+local combatIndicatorX = 96
+local combatIndicatorY = -15
 local combatIndicatorScale = 1
-local combatIndicatorSize = 30
-local combatIndicatorIcon = "Interface\\PlayerFrame\\Deathknight-Energize-Blood"
+local combatIndicatorSize = 24
+local combatIndicatorIcon = "Interface\\ICONS\\Ability_DualWield"
 
 m.TargetCombatIndicator = CreateFrame("Frame", nil, TargetFrame)
 m.TargetCombatIndicator:SetParent(TargetFrame)

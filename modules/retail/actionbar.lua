@@ -47,7 +47,7 @@ function m:OnLoad()
     ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, -314, 10)
 
     MultiBarBottomLeftButton1:ClearAllPoints()
-    MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", 0, 6)
+    MultiBarBottomLeftButton1:SetPoint("BOTTOMLEFT", "ActionButton1", "TOPLEFT", -26, 12)
 
     MultiBarBottomRightButton1:ClearAllPoints()
 
@@ -83,14 +83,19 @@ function m:OnLoad()
         end
     end
 
+    -- Bigger important abilities
+    for i = 7, 10 do
+        _G["MultiBarBottomLeftButton" .. i]:SetScale(1.3)
+    end
+
     -- Extra Action Bar
     ExtraActionButton1:ClearAllPoints()
-    ExtraActionButton1:SetPoint("BOTTOM", PlayerPowerBarAlt, "TOP", 0, 20)
+    ExtraActionButton1:SetPoint("TOP", PlayerPowerBarAlt, "BOTTOM", 0, -20)
 
     -- Castbar
     CastingBarFrame.ignoreFramePositionManager = true
     CastingBarFrame:ClearAllPoints()
-    CastingBarFrame:SetPoint("BOTTOM", 0, 150)
+    CastingBarFrame:SetPoint("BOTTOM", 0, 255)
     CastingBarFrame:SetScale(1.2)
 
     -- Alternative PowerBar
@@ -98,7 +103,7 @@ function m:OnLoad()
     PlayerPowerBarAlt:SetMovable(true)
     PlayerPowerBarAlt:SetUserPlaced(true)
     PlayerPowerBarAlt:ClearAllPoints()
-    PlayerPowerBarAlt:SetPoint("BOTTOM", "CastingBarFrame", "TOP", 0, 20)
+    PlayerPowerBarAlt:SetPoint("TOP", "CastingBarFrame", "BOTTOM", 0, -20)
     PlayerPowerBarAlt:SetMovable(false)
 
     StanceButton1:ClearAllPoints()
@@ -139,6 +144,9 @@ function m:OnLoad()
         end
     end
 
+    CharacterMicroButton:ClearAllPoints()
+    CharacterMicroButton:SetPoint("BOTTOM", -130, -30)
+
     local function MoveRelativeToEnabledBars(index)
         -- Move Main Action Bar to middle
         local mainBarXPos = SHOW_MULTI_ACTIONBAR_2 and -315 or -231
@@ -150,14 +158,17 @@ function m:OnLoad()
         local petYPos = SHOW_MULTI_ACTIONBAR_1 and 53 * actionBarScale or 10 * actionBarScale
 
         -- Move Stance Y is Bottom Left Bar is enabled
-        local stanceYPos = SHOW_MULTI_ACTIONBAR_1 and 48 * actionBarScale or 5 * actionBarScale
+        local stanceYPos = SHOW_MULTI_ACTIONBAR_1 and 55 * actionBarScale or 7 * actionBarScale
 
         if index == "PETACTIONBAR_YPOS" then
             PetActionButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", petXPos, petYPos)
-            ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, mainBarXPos, 54)
+            ActionButton1:SetPoint('BOTTOM', MainMenuBarArtFrameBackground, mainBarXPos, 10)
         elseif index == "StanceBarFrame" then
             StanceButton1:SetPoint("BOTTOMLEFT", ActionButton1, "TOP", 10, stanceYPos)
         end
+
+        CharacterMicroButton:ClearAllPoints()
+        CharacterMicroButton:SetPoint("BOTTOM", -130, -30)
     end
 
     -- Position ActionBars properly when enabling/disabling Extra ActionBars
