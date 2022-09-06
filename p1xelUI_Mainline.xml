@@ -1,6 +1,0 @@
-<Ui>
-  <Script file="p1xelUI.lua"/>
-  <Script file="modules\Mainline\misc.lua"/>
-  <Script file="modules\Mainline\sharedmedia.lua"/>
-  <Script file="modules\Mainline\tags.lua"/>
-</Ui>

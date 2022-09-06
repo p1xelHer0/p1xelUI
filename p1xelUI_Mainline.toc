@@ -3,4 +3,5 @@
 ## RequiredDeps: ElvUI
 ## Notes: Media, tags and other shit for ElvUI
 
-p1xelUI_Mainline.xml
+Mainline\Libraries.xml
+Mainline\Init.xml

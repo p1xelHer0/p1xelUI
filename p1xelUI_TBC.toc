@@ -3,4 +3,5 @@
 ## RequiredDeps: ElvUI
 ## Notes: Media, tags and other shit for ElvUI-TBC
 
-p1xelUI-TBC.xml
+TBC\Libraries.xml
+TBC\Init.xml
