@@ -15,11 +15,10 @@ function m:OnLoad()
     self:SetupRaidFrames()
     self:SetupMinimap()
     self:MouseOverElements()
-    self:StyleLayerFrame()
 end
 
 function m:Misc()
-    -- UIErrorsFrame:Hide()
+    UIErrorsFrame:Hide()
 end
 
 function m:SetCVars()
@@ -110,6 +109,7 @@ end
 function m:SetupGameTooltip()
     local function FixGameTooltip()
         -- Don't move tooltip to the left when enabling Right Bars
+        -- We only show the Right Bars on hover anyways
         CONTAINER_OFFSET_X = 0
         CONTAINER_OFFSET_Y = 160
     end
@@ -145,10 +145,9 @@ function m:SetupMinimap()
     MinimapZoomIn:Hide()
     MinimapZoomOut:Hide()
     MinimapBorderTop:Hide()
-    MinimapToggleButton:Hide()
     MinimapZoneText:Hide()
-    MiniMapWorldMapButton:Hide()
 
+    MiniMapWorldMapButton:SetAlpha(0)
     MinimapNorthTag:SetAlpha(0)
     GameTimeFrame:SetAlpha(0)
     MiniMapTracking:SetAlpha(0)
@@ -164,8 +163,11 @@ function m:SetupMinimap()
 end
 
 function m:MouseOverElements()
-    local ELEMENTS_TO_MOUSEOVER = {GameTimeFrame, QueueStatusMinimapButton,
-                                   MiniMapTracking}
+    local ELEMENTS_TO_MOUSEOVER = {
+      GameTimeFrame, 
+      QueueStatusMinimapButton,
+      MiniMapTracking
+    }
 
     local function showElement(self)
         self:SetAlpha(100)
@@ -180,9 +182,4 @@ function m:MouseOverElements()
         element:HookScript("OnLeave", hideElement)
         element:SetAlpha(0)
     end
-end
-
-function m:StyleLayerFrame()
-  MinimapLayerFrame:ClearAllPoints()
-  MinimapLayerFrame:SetPoint("BOTTOM", MinimapBorder, "TOP", 8, -10)
 end

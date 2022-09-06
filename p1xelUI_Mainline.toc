@@ -2,4 +2,5 @@
 ## Title: p1xelUI
 ## Notes: Media, tags and other shit for ElvUI
 
-p1xelUI.xml
+Mainline\Libraries.xml
+Mainline\Init.xml

@@ -1,5 +1,5 @@
 local _, p1xelUI = ...
-local m = p1xelUI:CreateModule("Font")
+local m = p1xelUI:CreateModule("Fonts")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)

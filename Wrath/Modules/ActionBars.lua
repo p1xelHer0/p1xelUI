@@ -1,5 +1,5 @@
 local _, p1xelUI = ...
-local m = p1xelUI:CreateModule("Actionbar")
+local m = p1xelUI:CreateModule("ActionBars")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)
@@ -8,8 +8,8 @@ end)
 
 local hideArrows = true
 
-local hideHotkeys = false
-local hideMacroNames = false
+local hideHotkeys = true
+local hideMacroNames = true
 
 function m:OnLoad()
     local actionBarScale = 1.0
@@ -193,8 +193,8 @@ function m:OnLoad()
         -- hooksecurefunc(button, "UpdateHotkeys", updateHotkeys)
     end
 
-    hooksecurefunc("ActionButton_UpdateRangeIndicator", updateHotkeys)
-    hooksecurefunc("PetActionButton_SetHotkeys", updateHotkeys)
+    -- hooksecurefunc("ActionButton_UpdateRangeIndicator", updateHotkeys)
+    -- hooksecurefunc("PetActionButton_SetHotkeys", updateHotkeys)
 
     _G["MultiBarBottomRightButton5"]:SetAlpha(0)
     _G["MultiBarBottomRightButton6"]:SetAlpha(0)
@@ -250,9 +250,24 @@ function m:HideMacroNames(hide)
 end
 
 function m:HideMicroMenuAndBags()
-    local showOnHover = {"MainMenuBarBackpackButton", "CharacterBag0Slot",
-                         "CharacterBag1Slot", "CharacterBag2Slot", "CharacterBag3Slot", 
-                         "KeyRingButton", "CharacterMicroButton","SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "SocialsMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
+    local showOnHover = {
+      "MainMenuBarBackpackButton",
+      "CharacterBag0Slot",
+      "CharacterBag1Slot",
+      "CharacterBag2Slot",
+      "CharacterBag3Slot",
+      "KeyRingButton",
+
+      "CharacterMicroButton",
+      "SpellbookMicroButton",
+      "AchievementMicroButton",
+      "TalentMicroButton",
+      "QuestLogMicroButton",
+      "SocialsMicroButton",
+      "LFGMicroButton",
+      "MainMenuMicroButton",
+      -- "PvPMicroButton",
+    }
 
     local function showElement(self)
         for _, v in ipairs(showOnHover) do
@@ -276,9 +291,32 @@ end
 
 function m:HideExtraActionBars()
     local showOnHover = {
-      -- "MultiBarLeft", "MultiBarRight",
-      -- "MultiBarLeftButton1", "MultiBarLeftButton2", "MultiBarLeftButton3", "MultiBarLeftButton4", "MultiBarLeftButton5", "MultiBarLeftButton6", "MultiBarLeftButton7", "MultiBarLeftButton8", "MultiBarLeftButton9", "MultiBarLeftButton10", "MultiBarLeftButton11", "MultiBarLeftButton12",
-      -- "MultiBarRightButton1", "MultiBarRightButton2", "MultiBarRightButton3", "MultiBarRightButton4", "MultiBarRightButton5", "MultiBarRightButton6", "MultiBarRightButton7", "MultiBarRightButton8", "MultiBarRightButton9", "MultiBarRightButton10", "MultiBarRightButton11", "MultiBarRightButton12"
+      "MultiBarLeft",
+      "MultiBarRight",
+      "MultiBarLeftButton1",
+      "MultiBarLeftButton2",
+      "MultiBarLeftButton3",
+      "MultiBarLeftButton4",
+      "MultiBarLeftButton5",
+      "MultiBarLeftButton6",
+      "MultiBarLeftButton7",
+      "MultiBarLeftButton8",
+      "MultiBarLeftButton9",
+      "MultiBarLeftButton10",
+      "MultiBarLeftButton11",
+      "MultiBarLeftButton12",
+      "MultiBarRightButton1",
+      "MultiBarRightButton2",
+      "MultiBarRightButton3",
+      "MultiBarRightButton4",
+      "MultiBarRightButton5",
+      "MultiBarRightButton6",
+      "MultiBarRightButton7",
+      "MultiBarRightButton8",
+      "MultiBarRightButton9",
+      "MultiBarRightButton10",
+      "MultiBarRightButton11",
+      "MultiBarRightButton12"
     }
 
     local function showElement(self)

@@ -1,5 +1,5 @@
 local _, p1xelUI = ...
-local m = p1xelUI:CreateModule("Unitframes")
+local m = p1xelUI:CreateModule("UnitFrames")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)
@@ -11,8 +11,9 @@ function m:OnLoad()
     self:EnableClassColorStatusBar()
     self:EnableClassColorNameBackground()
     self:EnableCombatIndicator()
-    -- self:RemoveTargetLevel()
+    self:ColorTooltipName()
     -- self:EnableBigBuffs()
+    self:RemoveTargetLevel()
 end
 
 function m:SetupUnitframes()
@@ -33,10 +34,13 @@ function m:SetupUnitframes()
     PlayerFrame.feedbackText = feedbackText
     PlayerFrame.feedbackStartTime = 0
     PlayerHitIndicator:Hide()
-    PlayerLeaderIcon:Hide()
+    PlayerLeaderIcon:SetAlpha(0)
     PetHitIndicator:Hide()
     PlayerFrame.name:SetAlpha(0)
     PlayerFrameGroupIndicator:SetAlpha(0)
+    PlayerFrameRoleIcon:SetAlpha(0)
+    PlayerPrestigeBadge:SetAlpha(0)
+    PlayerPrestigePortrait:SetAlpha(0)
     PlayerPVPIcon:SetAlpha(0)
 
     PetFrame.feedbackText = feedbackText
@@ -48,11 +52,11 @@ function m:SetupUnitframes()
     TargetFrame:SetPoint("LEFT", PlayerFrame, "RIGHT", -5, 0)
     TargetFrame:SetScale(frameScale)
     TargetFrame:SetUserPlaced(true)
-    -- TargetFrame.name:SetAlpha(0)
     TargetFrameSpellBar:SetScale(castbarScale)
     TargetFrameTextureFramePVPIcon:SetAlpha(0)
     TargetFrameTextureFramePrestigeBadge:SetAlpha(0)
     TargetFrameTextureFramePrestigePortrait:SetAlpha(0)
+    TargetFrameTextureFrameLeaderIcon:SetAlpha(0)
 
     -- Target of Target
     TargetFrameToT:ClearAllPoints()
@@ -61,7 +65,7 @@ function m:SetupUnitframes()
 
     -- Focus
     FocusFrame:ClearAllPoints()
-    FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -130)
+    FocusFrame:SetPoint("TOP", TargetFrame, "BOTTOM", 0, -129)
     FocusFrame:SetScale(frameScale)
     FocusFrame:SetUserPlaced(true)
     -- FocusFrame.name:SetAlpha(0)
@@ -69,11 +73,28 @@ function m:SetupUnitframes()
     FocusFrameTextureFramePVPIcon:SetAlpha(0)
     FocusFrameTextureFramePrestigeBadge:SetAlpha(0)
     FocusFrameTextureFramePrestigePortrait:SetAlpha(0)
+    FocusFrameTextureFrameLeaderIcon:SetAlpha(0)
 
     -- Target of Focus
     FocusFrameToT:ClearAllPoints()
     FocusFrameToT:SetPoint("LEFT", FocusFrame, "BOTTOMRIGHT", ToTX, ToTY)
     FocusFrameToT.name:SetAlpha(0)
+end
+
+function m:RemoveTargetLevel()
+    hooksecurefunc("TargetFrame_Update", function(target)
+        if (UnitLevel(target.unit) == 60) and UnitIsPlayer(target.unit) then
+            TargetFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
+            TargetFrameTextureFrameLevelText:SetAlpha(0)
+            FocusFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
+            FocusFrameTextureFrameLevelText:SetAlpha(0)
+        else
+            TargetFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame")
+            TargetFrameTextureFrameLevelText:SetAlpha(100)
+            FocusFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame")
+            FocusFrameTextureFrameLevelText:SetAlpha(100)
+        end
+    end)
 end
 
 function m:EnableClassColorStatusBar()
@@ -94,9 +115,10 @@ local UnitIsPlayer, UnitIsConnected, UnitClass, RAID_CLASS_COLORS = UnitIsPlayer
     RAID_CLASS_COLORS
 local _, class, c
 
+-- ClassColor statusbar for Tooltip and TargetofTargets
 function m.ColorStatusbar(statusbar, unit)
     if UnitIsPlayer(unit) and UnitIsConnected(unit) and UnitClass(unit) then
-        if unit == statusbar.unit or statusbar == isTooltipStatusBar then
+        if unit == "targettarget" or unit == "focus-target" then
             _, class = UnitClass(unit)
             c = RAID_CLASS_COLORS[class]
             statusbar:SetStatusBarColor(c.r, c.g, c.b)
@@ -104,14 +126,19 @@ function m.ColorStatusbar(statusbar, unit)
     end
 end
 
--- function m:RemoveTargetLevel()
---   hooksecurefunc("TargetFrame_Update", function()
---     TargetFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
---     TargetFrameTextureFrameLevelText:SetAlpha(0)
---     FocusFrameTextureFrameTexture:SetTexture("Interface/TargetingFrame/UI-TargetingFrame-NoLevel")
---     FocusFrameTextureFrameLevelText:SetAlpha(0)
---   end)
--- end
+function m.ColorTooltipName()
+  GameTooltip:HookScript("OnTooltipSetUnit", function(GameTooltip)
+	local _, unit = GameTooltip:GetUnit()
+	if UnitIsPlayer(unit) then
+		local _, class = UnitClass(unit)
+		local color = class and (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+		if color then
+			local text = GameTooltipTextLeft1:GetText()
+			GameTooltipTextLeft1:SetFormattedText("|cff%02x%02x%02x%s|r", color.r * 255, color.g * 255, color.b * 255, text:match("|cff\x\x\x\x\x\x(.+)|r") or text)
+		end
+	end
+    end)
+end
 
 function m:EnableClassColorNameBackground()
     local eventHandler = CreateFrame("FRAME", nil, UIParent)
@@ -150,11 +177,11 @@ function m:EnableClassColorNameBackground()
 end
 
 -- Combat indicator
-local combatIndicatorX = 64
+local combatIndicatorX = 96
 local combatIndicatorY = -15
 local combatIndicatorScale = 1
-local combatIndicatorSize = 32
-local combatIndicatorIcon = "Interface\\CharacterFrame\\UI-StateIcon"
+local combatIndicatorSize = 24
+local combatIndicatorIcon = "Interface\\ICONS\\Ability_DualWield"
 
 m.TargetCombatIndicator = CreateFrame("Frame", nil, TargetFrame)
 m.TargetCombatIndicator:SetParent(TargetFrame)
@@ -164,7 +191,6 @@ m.TargetCombatIndicator:SetScale(combatIndicatorScale)
 m.TargetCombatIndicator.icon = m.TargetCombatIndicator:CreateTexture(nil, "BORDER")
 m.TargetCombatIndicator.icon:SetAllPoints()
 m.TargetCombatIndicator.icon:SetTexture(combatIndicatorIcon)
-m.TargetCombatIndicator.icon:SetTexCoord(0.5, 1.0, 0, 0.5)
 m.TargetCombatIndicator:Hide()
 
 m.FocusCombatIndicator = CreateFrame("Frame", nil, FocusFrame)
@@ -175,7 +201,6 @@ m.FocusCombatIndicator:SetScale(combatIndicatorScale)
 m.FocusCombatIndicator.icon = m.FocusCombatIndicator:CreateTexture(nil, "BORDER")
 m.FocusCombatIndicator.icon:SetAllPoints()
 m.FocusCombatIndicator.icon:SetTexture(combatIndicatorIcon)
-m.FocusCombatIndicator.icon:SetTexCoord(0.5, 1.0, 0, 0.5)
 m.FocusCombatIndicator:Hide()
 
 m.combatIndicatorElapsed = 0
