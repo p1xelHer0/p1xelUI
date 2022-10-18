@@ -8,6 +8,7 @@ end)
 
 function m:OnLoad()
     self:Settings()
+    self:Layer()
 end
 
 function m:Settings()
@@ -37,7 +38,7 @@ function m:Settings()
     SetCVar("floatingCombatTextSpellMechanics", 1)
     SetCVar("floatingCombatTextSpellMechanicsOther", 1)
 
-    SetCVar("maxFPS", 0)
+    SetCVar("maxFPS", 160)
     SetCVar("maxFPSBk", 30)
     SetCVar("maxFPSLoading", 10)
 
@@ -58,4 +59,11 @@ function m:Settings()
     SetCVar("showTargetOfTarget", 1)
 
     SetCVar("whisperMode", "inline")
+end
+
+function m:Layer()
+    -- Nova World Buffs - Layer text, already anchored to Minimap
+    MinimapLayerFrame:ClearAllPoints()
+    MinimapLayerFrame:SetPoint("TOP", 0, 20)
+    LibDBIcon10_NovaWorldBuffs:SetAlpha(0)
 end

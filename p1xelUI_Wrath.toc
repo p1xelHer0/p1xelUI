@@ -3,5 +3,5 @@
 ## RequiredDeps: ElvUI
 ## Notes: Media, tags and other shit for ElvUI-Wrath
 
-Wrath\Libraries.xml
+Wrath\Libs.xml
 Wrath\Init.xml

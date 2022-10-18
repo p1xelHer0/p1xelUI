@@ -13,21 +13,21 @@ function m:OnLoad()
 end
 
 function m:ElvUITags()
-    -- local E, L = unpack(ElvUI)
+    local E, L = unpack(ElvUI)
 
-    -- local roleTag = "p1xelRole"
-    -- ElvUF.Tags.Events[roleTag] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
-    -- ElvUF.Tags.Methods[roleTag] = function(unit)
-    --     local Role = UnitGroupRolesAssigned(unit)
+    local roleTag = "p1xelRole"
+    ElvUF.Tags.Events[roleTag] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
+    ElvUF.Tags.Methods[roleTag] = function(unit)
+        local Role = UnitGroupRolesAssigned(unit)
 
-    --     if Role == "HEALER" then
-    --         return "|cff4baf4c+|r "
-    --     elseif Role == "TANK" then
-    --         return "|cffb56e45#|r "
-    --     end
+        if Role == "HEALER" then
+            return "|cff4baf4c+|r "
+        elseif Role == "TANK" then
+            return "|cffb56e45#|r "
+        end
 
-    --     return ""
-    -- end
+        return ""
+    end
 
-    -- E:AddTagInfo(roleTag, ns.mName, L["# for Tank, + for Healer and blank for DPS"], 4)
+    E:AddTagInfo(roleTag, ns.mName, L["# for Tank, + for Healer and blank for DPS"], 4)
 end

@@ -37,7 +37,7 @@ function m:Settings()
     SetCVar("floatingCombatTextSpellMechanics", 1)
     SetCVar("floatingCombatTextSpellMechanicsOther", 1)
 
-    SetCVar("maxFPS", 0)
+    SetCVar("maxFPS", 160)
     SetCVar("maxFPSBk", 30)
     SetCVar("maxFPSLoading", 10)
 
