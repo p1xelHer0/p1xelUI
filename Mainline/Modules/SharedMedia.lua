@@ -22,5 +22,5 @@ function m:SetupMedia()
     LSM:Register("font", "p1xel-Regular", [[Interface\Addons\p1xelUI\Media\Fonts\Barlow_SemiCondensed_SemiBold.ttf]])
     LSM:Register("font", "p1xel-Regular-Bold", [[Interface\Addons\p1xelUI\Media\Fonts\Barlow_SemiCondensed_Black.ttf]])
 
-    LSM:Register("statusbar", "p1xel", [[Interface\Addons\p1xelUI\Media\Statusbar\statusbar.tga]])
+    LSM:Register("statusbar", "p1xel", [[Interface\Addons\p1xelUI\Media\StatusBar\StatusBar.tga]])
 end
