@@ -15,12 +15,14 @@ function m:Settings()
 
   SetCVar("autoDismountFlying", 1)
   SetCVar("autoLootDefault", 1)
+  SetCVar("combinedBags", 1)
+
   SetCVar("cameraDistanceMaxZoomFactor", 2.6)
   SetCVar("cameraPitchMoveSpeed", 45)
   SetCVar("cameraSmoothStyle", 0)
   SetCVar("cameraYawMoveSpeed", 90)
   SetCVar("ffxGlow", 0)
-  SetCVar("autoLootDefault", 1)
+
   SetCVar("uiScale", 0.65)
   SetCVar("useUiScale", 1)
   SetCVar("BreakUpLargeNumbers", 0)
@@ -35,6 +37,9 @@ function m:Settings()
   SetCVar("findYourselfMode", 1)
   SetCVar("Outline", 3)
   SetCVar("OutlineEngineMode", 2)
+
+  SetCVar("RAIDWaterDetail", 0)
+  SetCVar("RAIDweatherDensity ", 0)
 
   SetCVar("floatingCombatTextSpellMechanics", 1)
   SetCVar("floatingCombatTextSpellMechanicsOther", 1)

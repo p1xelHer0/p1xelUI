@@ -15,10 +15,10 @@ end
 function m:ElvUITags()
   local E, L = unpack(ElvUI)
 
-  local colorReset = "|r"
-  local RED = E:RGBToHex(1, 0, 0)
-  local ORANGE = E:RGBToHex(1, 0.5, 0.25)
-  local WHITE = E:RGBToHex(1, 1, 1)
+  local COLOR_RESET = "|r"
+  local COLOR_RED = E:RGBToHex(1, 0, 0)
+  local COLOR_ORANGE = E:RGBToHex(1, 0.5, 0.25)
+  local COLOR_WHITE = E:RGBToHex(1, 1, 1)
 
   local difficultyColor = function(unit, isBattlePet)
     local color = nil
@@ -42,15 +42,15 @@ function m:ElvUITags()
     local classification = UnitClassification(unit)
 
     if classification == "worldboss" then
-      text = RED .. "B" .. colorReset
+      text = COLOR_RED .. "B" .. COLOR_RESET
     elseif classification == "rareelite" then
-      text = RED .. "R+" .. colorReset
+      text = COLOR_RED .. "R+" .. COLOR_RESET
     elseif classification == "elite" then
-      text = ORANGE .. "+" .. colorReset
+      text = COLOR_ORANGE .. "+" .. COLOR_RESET
     elseif classification == "rare" then
-      text = ORANGE .. "R" .. colorReset
+      text = COLOR_ORANGE .. "R" .. COLOR_RESET
     elseif classification == "minus" then
-      text = WHITE .. "-" .. colorReset
+      text = COLOR_WHITE .. "-" .. COLOR_RESET
     end
 
     return text
@@ -80,7 +80,7 @@ function m:ElvUITags()
 
     local color = difficultyColor(unit, isBattlePet)
 
-    return color .. levelText .. "|r" .. classification .. "|r "
+    return color .. levelText .. COLOR_RESET .. classification .. COLOR_RESET .. " "
   end
 
   local tagLevel = "p1xelLevel"
@@ -148,21 +148,19 @@ function m:ElvUITags()
   E:AddTagInfo(
     tagRole,
     ns.mName,
-    L["+ for Healer, # for Tank and MT for Main Tank"],
-    4
+    L["+ for Healer, # for Tank and MT for Main Tank"]
   )
   E:AddTagInfo(
     tagRoleLeft,
     ns.mName,
-    L["+ for Healer, # for Tank and MT for Main Tank, padding on left side"],
-    4
+    L["+ for Healer, # for Tank and MT for Main Tank, padding on left side"]
   )
   E:AddTagInfo(
     tagRoleRight,
     ns.mName,
-    L["+ for Healer, # for Tank and MT for Main Tank, padding on left side, padding on right side"],
-    4
+    L["+ for Healer, # for Tank and MT for Main Tank, padding on left side, padding on right side"]
   )
+
 
   local tagLeaderEvent = "PARTY_LEADER_CHANGED GROUP_ROSTER_UPDATE"
 
@@ -217,20 +215,17 @@ function m:ElvUITags()
   E:AddTagInfo(
     tagLeader,
     ns.mName,
-    L["L for Leader, MA for Main Assist and A for Assist"],
-    4
+    L["L for Leader, MA for Main Assist and A for Assist"]
   )
   E:AddTagInfo(
     tagLeaderLeft,
     ns.mName,
-    L["L for Leader, MA for Main Assist and A for Assist, padding on left side"],
-    4
+    L["L for Leader, MA for Main Assist and A for Assist, padding on left side"]
   )
   E:AddTagInfo(
     tagLeaderRight,
     ns.mName,
-    L["L for Leader, MA for Main Assist and A for Assist, padding on right side"],
-    4
+    L["L for Leader, MA for Main Assist and A for Assist, padding on right side"]
   )
 
   local tagPhaseEvent = "UNIT_PHASE"
@@ -242,13 +237,13 @@ function m:ElvUITags()
       UnitIsPlayer(unit) and UnitIsConnected(unit) and UnitPhaseReason(unit)
       or nil
     then
-      return " |cFF40FFFF*|r"
+      return "|cFF40FFFF*" .. COLOR_RESET
     end
 
     return nil
   end
 
-  E:AddTagInfo(tagPhase, ns.mName, L["* for Phase"], 4)
+  E:AddTagInfo(tagPhase, ns.mName, L["* for Phase"])
 
   local tagCombatEvent = "PLAYER_REGEN_ENABLED PLAYER_REGEN_DISABLED"
 
@@ -256,13 +251,13 @@ function m:ElvUITags()
   ElvUF.Tags.Events[tagCombat] = tagCombatEvent
   ElvUF.Tags.Methods[tagCombat] = function(unit)
     if UnitAffectingCombat(unit) then
-      return "|cFFFF0000×|r"
+      return COLOR_RED .. "×" .. COLOR_RESET
     end
 
     return nil
   end
 
-  E:AddTagInfo(tagCombat, ns.mName, L["× for Combat"], 4)
+  E:AddTagInfo(tagCombat, ns.mName, L["× for Combat"])
 
   local tagResurrectionEvent = "INCOMING_RESURRECT_CHANGED"
 
@@ -276,7 +271,7 @@ function m:ElvUITags()
     return nil
   end
 
-  E:AddTagInfo(tagResurrection, ns.mName, L["+ for Resurrection"], 4)
+  E:AddTagInfo(tagResurrection, ns.mName, L["+ for Resurrection"])
 
   local tagReadyCheckEvent =
     "READY_CHECK READY_CHECK_CONFIRM READY_CHECK_FINISHED"
@@ -301,7 +296,6 @@ function m:ElvUITags()
   E:AddTagInfo(
     tagReadyCheck,
     ns.mName,
-    L["R for Ready, X for not Ready, ? for In Progress"],
-    4
+    L["R for Ready, X for not Ready, ? for In Progress"]
   )
 end

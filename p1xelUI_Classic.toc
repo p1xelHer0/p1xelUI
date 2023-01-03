@@ -2,7 +2,7 @@
 ## Author: p1xelHer0
 ## Notes: Fonts, StatusBar, ElvUI Tags and Misc
 ## RequiredDeps: ElvUI
-## Interface: 100002
+## Interface: 11403
 
-Mainline\Libs.xml
-Mainline\Init.xml
+Classic\Libs.xml
+Classic\Init.xml

@@ -1,7 +1,8 @@
-## Interface: 20501
-## Title: p1xelUI
+## Title: |cff30d5acp|cff26b5951|cff1e977ex|cff187967e|cff145d50l|rUI
+## Author: p1xelHer0
+## Notes: Fonts, StatusBar, ElvUI Tags and Misc
 ## RequiredDeps: ElvUI
-## Notes: Media, tags and other shit for ElvUI-Wrath
+## Interface: 30400
 
 Wrath\Libs.xml
 Wrath\Init.xml
