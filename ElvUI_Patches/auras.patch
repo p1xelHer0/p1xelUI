@@ -1,0 +1,30 @@
+diff --git a/ElvUI/Core/Modules/Auras/Auras.lua b/ElvUI/Core/Modules/Auras/Auras.lua
+index 1c691f721..d6d42399a 100644
+--- a/ElvUI/Core/Modules/Auras/Auras.lua
++++ b/ElvUI/Core/Modules/Auras/Auras.lua
+@@ -169,7 +169,8 @@ function A:CreateIcon(button)
+ 		button.CooldownOverride = 'auras'
+ 		button.isRegisteredCooldown = true
+ 		button.forceEnabled = true
+-		button.showSeconds = true
++		-- p1xelEdit - don't show seconds on Auras
++		button.showSeconds = false
+ 
+ 		if not E.RegisteredCooldowns.auras then E.RegisteredCooldowns.auras = {} end
+ 		tinsert(E.RegisteredCooldowns.auras, button)
+@@ -197,11 +198,13 @@ end
+ function A:UpdateIcon(button)
+ 	local db = A.db[button.auraType]
+ 	button.count:ClearAllPoints()
+-	button.count:Point('BOTTOMRIGHT', db.countXOffset, db.countYOffset)
++	-- p1xelEdit - move Counter text to the 'TOP' edge, also making it justifyH 'CENTER'
++	button.count:Point('CENTER', button, 'TOP', db.countXOffset, db.countYOffset)
+ 	button.count:FontTemplate(LSM:Fetch('font', db.countFont), db.countFontSize, db.countFontOutline)
+ 
+ 	button.text:ClearAllPoints()
+-	button.text:Point('TOP', button, 'BOTTOM', db.timeXOffset, db.timeYOffset)
++	-- p1xelEdit - move Timer text to the 'BOTTOM' edge
++	button.text:Point('CENTER', button, 'BOTTOM', db.timeXOffset, db.timeYOffset)
+ 	button.text:FontTemplate(LSM:Fetch('font', db.timeFont), db.timeFontSize, db.timeFontOutline)
+ 
+ 	local pos, spacing, iconSize = db.barPosition, db.barSpacing, db.size - (E.Border * 2)

@@ -1,0 +1,16 @@
+diff --git a/ElvUI/Core/General/Toolkit.lua b/ElvUI/Core/General/Toolkit.lua
+index 95ac60db6..db51a5625 100644
+--- a/ElvUI/Core/General/Toolkit.lua
++++ b/ElvUI/Core/General/Toolkit.lua
+@@ -371,8 +371,9 @@ local function FontTemplate(fs, font, size, style, skip)
+ 		fs:SetShadowOffset(1, -0.5)
+ 		fs:SetShadowColor(0, 0, 0, 1)
+ 	else
+-		fs:SetShadowOffset(0, 0)
+-		fs:SetShadowColor(0, 0, 0, 0)
++	        -- p1xelEdit - sharper shadows
++		fs:SetShadowOffset(1, -1)
++		fs:SetShadowColor(0, 0, 0, 1)
+ 	end
+ 
+ 	-- convert because of bad values between versions
