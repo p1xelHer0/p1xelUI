@@ -56,7 +56,12 @@ function m:ElvUITags()
     return text
   end
 
-  local p1xelLevel = function(unit)
+  local tagLevelEvent =
+    "UNIT_LEVEL UNIT_NAME_UPDATE PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
+
+  local tagLevel = "p1xelLevel"
+  ElvUF.Tags.Events[tagLevel] = tagLevelEvent
+  ElvUF.Tags.Methods[tagLevel] = function(unit)
     local levelText = nil
     local isBattlePet = E.Retail
       and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit))
@@ -80,14 +85,82 @@ function m:ElvUITags()
 
     local color = difficultyColor(unit, isBattlePet)
 
+    return color .. levelText .. COLOR_RESET .. classification .. COLOR_RESET
+  end
+
+  local tagLevelLeft = "p1xelLevel-left"
+  ElvUF.Tags.Events[tagLevelLeft] = tagLevelEvent
+  ElvUF.Tags.Methods[tagLevelLeft] = function(unit)
+    local levelText = nil
+    local isBattlePet = E.Retail
+      and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit))
+
+    local level = UnitEffectiveLevel(unit)
+    if isBattlePet then
+      levelText = UnitBattlePetLevel(unit)
+    elseif level == UnitEffectiveLevel("player") then
+      levelText = ""
+    elseif level > 0 then
+      levelText = level
+    else
+      levelText = " ??"
+    end
+
+    local classification = shortClassification(unit)
+
+    if levelText == "" and classification == "" then
+      return ""
+    end
+
+    local color = difficultyColor(unit, isBattlePet)
+
+    return color .. " " .. levelText .. COLOR_RESET .. classification .. COLOR_RESET
+  end
+
+  local tagLevelRight = "p1xelLevel-right"
+  ElvUF.Tags.Events[tagLevelRight] = tagLevelEvent
+  ElvUF.Tags.Methods[tagLevelRight] = function(unit)
+    local levelText = nil
+    local isBattlePet = E.Retail
+      and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit))
+
+    local level = UnitEffectiveLevel(unit)
+    if isBattlePet then
+      levelText = UnitBattlePetLevel(unit)
+    elseif level == UnitEffectiveLevel("player") then
+      levelText = ""
+    elseif level > 0 then
+      levelText = level
+    else
+      levelText = "?? "
+    end
+
+    local classification = shortClassification(unit)
+
+    if levelText == "" and classification == "" then
+      return ""
+    end
+
+    local color = difficultyColor(unit, isBattlePet)
+
     return color .. levelText .. COLOR_RESET .. classification .. COLOR_RESET .. " "
   end
 
-  local tagLevel = "p1xelLevel"
-  local tagLevelEvent =
-    "UNIT_LEVEL UNIT_NAME_UPDATE PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
-  ElvUF.Tags.Events[tagLevel] = tagLevelEvent
-  ElvUF.Tags.Methods[tagLevel] = p1xelLevel
+  E:AddTagInfo(
+    tagLevel,
+    ns.mName,
+    L["Smart level with Boss, Rare and Elite indicator"]
+  )
+  E:AddTagInfo(
+    tagLevelLeft,
+    ns.mName,
+    L["Smart level with Boss, Rare and Elite indicator"]
+  )
+  E:AddTagInfo(
+    tagLevelRight,
+    ns.mName,
+    L["Smart level with Boss, Rare and Elite indicator"]
+  )
 
   local tagRoleEvent = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
 
