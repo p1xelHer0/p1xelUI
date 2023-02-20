@@ -1,16 +1,16 @@
 local _, p1xelUI = ...
-local m = p1xelUI:CreateModule("Misc")
+local M = p1xelUI:CreateModule("Misc")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)
   return self[event](self, ...)
 end)
 
-function m:OnLoad()
-  self:Settings()
+function M:OnLoad()
+  self:CVars()
 end
 
-function m:Settings()
+function M:CVars()
   SetCVar("ActionButtonUseKeyDown", 1)
 
   SetCVar("autoDismountFlying", 1)
@@ -23,7 +23,7 @@ function m:Settings()
   SetCVar("cameraYawMoveSpeed", 90)
   SetCVar("ffxGlow", 0)
 
-  SetCVar("uiScale", 0.65)
+  SetCVar("uiScale", 0.6)
   SetCVar("useUiScale", 1)
   SetCVar("BreakUpLargeNumbers", 0)
   SetCVar("SHOW_ARENA_ENEMY_FRAMES_TEXT", 1)
@@ -44,7 +44,8 @@ function m:Settings()
   SetCVar("floatingCombatTextSpellMechanics", 1)
   SetCVar("floatingCombatTextSpellMechanicsOther", 1)
 
-  SetCVar("maxFPS", 160)
+  SetCVar("maxFPS", 0)
+  SetCVar("maxFPSLoading", 10)
   SetCVar("maxFPSBk", 30)
   SetCVar("maxFPSLoading", 10)
 
@@ -52,6 +53,7 @@ function m:Settings()
   SetCVar("nameplateShowEnemyPets", 1)
   SetCVar("nameplateShowEnemyGuardians", 1)
   SetCVar("nameplateShowEnemyMinions", 1)
+  SetCVar("nameplateSelectedScale", 1.2)
   SetCVar("nameplateMaxDistance", 100)
   SetCVar("nameplateMaxAlphaDistance", 100)
   SetCVar("nameplateMinAlphaDistance", 100)

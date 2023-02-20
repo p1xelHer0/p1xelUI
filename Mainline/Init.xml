@@ -1,6 +1,7 @@
 <Ui>
   <Script file="p1xelUI.lua"/>
   <Script file="modules\Misc.lua"/>
-  <Script file="modules\SharedMedia.lua"/>
-  <Script file="modules\Tags.lua"/>
+  <Script file="modules\Fonts.lua"/>
+  <Script file="modules\UnitFrames.lua"/>
+  <Script file="modules\ActionBars.lua"/>
 </Ui>

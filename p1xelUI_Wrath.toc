@@ -1,7 +1,6 @@
 ## Title: |cff30d5acp|cff26b5951|cff1e977ex|cff187967e|cff145d50l|rUI
 ## Author: p1xelHer0
 ## Notes: Fonts, StatusBar, ElvUI Tags and Misc
-## RequiredDeps: ElvUI
 ## Interface: 30400
 
 Wrath\Libs.xml

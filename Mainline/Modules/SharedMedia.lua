@@ -1,16 +1,16 @@
 local _, p1xelUI = ...
-local m = p1xelUI:CreateModule("SharedMedia")
+local M = p1xelUI:CreateModule("SharedMedia")
 
 local eventHandler = CreateFrame("Frame", nil, UIParent)
 eventHandler:SetScript("OnEvent", function(self, event, ...)
   return self[event](self, ...)
 end)
 
-function m:OnLoad()
-  self:SetupMedia()
+function M:OnLoad()
+  -- self:SetupMedia()
 end
 
-function m:SetupMedia()
+function M:SetupMedia()
   local LSM = LibStub("LibSharedMedia-3.0")
   local p1xelText = "|cff30d5acp|cff26b5951|cff1e977ex|cff187967e|cff145d50l|cffffffff"
   local COLOR_RESET = "|r"
