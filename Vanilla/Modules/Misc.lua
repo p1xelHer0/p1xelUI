@@ -8,17 +8,22 @@ end)
 
 function m:OnLoad()
   self:Settings()
+  -- self:Layer()
 end
 
 function m:Settings()
+  SetCVar("ActionButtonUseKeyDown", 1)
+
   SetCVar("autoDismountFlying", 1)
   SetCVar("autoLootDefault", 1)
+  SetCVar("combinedBags", 1)
+
   SetCVar("cameraDistanceMaxZoomFactor", 2.6)
   SetCVar("cameraPitchMoveSpeed", 45)
   SetCVar("cameraSmoothStyle", 0)
   SetCVar("cameraYawMoveSpeed", 90)
   SetCVar("ffxGlow", 0)
-  SetCVar("autoLootDefault", 1)
+
   SetCVar("uiScale", 0.65)
   SetCVar("useUiScale", 1)
   SetCVar("BreakUpLargeNumbers", 0)
@@ -34,10 +39,13 @@ function m:Settings()
   SetCVar("Outline", 3)
   SetCVar("OutlineEngineMode", 2)
 
+  SetCVar("RAIDWaterDetail", 0)
+  SetCVar("RAIDweatherDensity ", 0)
+
   SetCVar("floatingCombatTextSpellMechanics", 1)
   SetCVar("floatingCombatTextSpellMechanicsOther", 1)
 
-  SetCVar("maxFPS", 0)
+  SetCVar("maxFPS", 160)
   SetCVar("maxFPSBk", 30)
   SetCVar("maxFPSLoading", 10)
 
@@ -58,4 +66,11 @@ function m:Settings()
   SetCVar("showTargetOfTarget", 1)
 
   SetCVar("whisperMode", "inline")
+end
+
+function m:Layer()
+  -- Nova World Buffs - Layer text, already anchored to Minimap
+  MinimapLayerFrame:ClearAllPoints()
+  MinimapLayerFrame:SetPoint("TOP", 0, 20)
+  LibDBIcon10_NovaWorldBuffs:SetAlpha(0)
 end

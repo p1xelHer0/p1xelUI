@@ -4,5 +4,5 @@
 ## RequiredDeps: ElvUI
 ## Interface: 11403
 
-Classic\Libs.xml
-Classic\Init.xml
+Vanilla\Libs.xml
+Vanilla\Init.xml

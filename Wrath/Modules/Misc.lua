@@ -63,7 +63,7 @@ end
 
 function m:Layer()
   -- Nova World Buffs - Layer text, already anchored to Minimap
-  MinimapLayerFrame:ClearAllPoints()
-  MinimapLayerFrame:SetPoint("TOP", 0, 20)
-  LibDBIcon10_NovaWorldBuffs:SetAlpha(0)
+  -- MinimapLayerFrame:ClearAllPoints()
+  -- MinimapLayerFrame:SetPoint("TOP", 0, 20)
+  -- LibDBIcon10_NovaWorldBuffs:SetAlpha(0)
 end
