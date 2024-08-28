@@ -98,3 +98,48 @@ function M:SetupRaidFrames()
     end
   end)
 end
+
+-- Combat indicator
+local combatIndicatorX = 96
+local combatIndicatorY = -15
+local combatIndicatorScale = 1
+local combatIndicatorSize = 24
+local combatIndicatorIcon = "Interface\\ICONS\\Ability_DualWield"
+
+M.TargetCombatIndicator = CreateFrame("Frame", nil, TargetFrame)
+M.TargetCombatIndicator:SetParent(TargetFrame)
+M.TargetCombatIndicator:SetPoint("CENTER", TargetFrame, combatIndicatorX, combatIndicatorY)
+M.TargetCombatIndicator:SetSize(combatIndicatorSize, combatIndicatorSize)
+M.TargetCombatIndicator:SetScale(combatIndicatorScale)
+M.TargetCombatIndicator.icon = M.TargetCombatIndicator:CreateTexture(nil, "BORDER")
+M.TargetCombatIndicator.icon:SetAllPoints()
+M.TargetCombatIndicator.icon:SetTexture(combatIndicatorIcon)
+M.TargetCombatIndicator:Hide()
+
+M.FocusCombatIndicator = CreateFrame("Frame", nil, FocusFrame)
+M.FocusCombatIndicator:SetParent(FocusFrame)
+M.FocusCombatIndicator:SetPoint("CENTER", FocusFrame, combatIndicatorX, combatIndicatorY)
+M.FocusCombatIndicator:SetSize(combatIndicatorSize, combatIndicatorSize)
+M.FocusCombatIndicator:SetScale(combatIndicatorScale)
+M.FocusCombatIndicator.icon = M.FocusCombatIndicator:CreateTexture(nil, "BORDER")
+M.FocusCombatIndicator.icon:SetAllPoints()
+M.FocusCombatIndicator.icon:SetTexture(combatIndicatorIcon)
+M.FocusCombatIndicator:Hide()
+
+M.combatIndicatorElapsed = 0
+local combatIndicatorUpdateInterval = 0.1
+local UnitAffectingCombat = UnitAffectingCombat
+
+function M.CombatIndicatorUpdate(_, elapsed)
+    M.combatIndicatorElapsed = M.combatIndicatorElapsed + elapsed
+
+    if M.combatIndicatorElapsed > combatIndicatorUpdateInterval then
+        M.combatIndicatorElapsed = 0
+        M.TargetCombatIndicator:SetShown(UnitAffectingCombat("target"))
+        M.FocusCombatIndicator:SetShown(UnitAffectingCombat("focus"))
+    end
+end
+
+function M:CombatIndicator()
+    eventHandler:SetScript("OnUpdate", self.CombatIndicatorUpdate)
+end
