@@ -212,7 +212,7 @@ function m:ElvUITags()
         return "|cFFB56E45MT|r "
       end
     elseif Role == "TANK" then
-      return "|cFFB56E45#|r "
+      return "|cFFB56E45T|r "
     end
 
     return nil
@@ -221,17 +221,17 @@ function m:ElvUITags()
   E:AddTagInfo(
     tagRole,
     ns.mName,
-    L["+ for Healer, # for Tank and MT for Main Tank"]
+    L["+ for Healer, T for Tank and MT for Main Tank"]
   )
   E:AddTagInfo(
     tagRoleLeft,
     ns.mName,
-    L["+ for Healer, # for Tank and MT for Main Tank, padding on left side"]
+    L["+ for Healer, T for Tank and MT for Main Tank, padding on left side"]
   )
   E:AddTagInfo(
     tagRoleRight,
     ns.mName,
-    L["+ for Healer, # for Tank and MT for Main Tank, padding on left side, padding on right side"]
+    L["+ for Healer, T for Tank and MT for Main Tank, padding on left side, padding on right side"]
   )
 
 

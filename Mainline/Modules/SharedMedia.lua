@@ -42,6 +42,11 @@ function m:SetupMedia()
     p1xelText .. "Bold" .. COLOR_RESET,
     [[Interface\Addons\p1xelUI\Media\Fonts\Barlow_SemiCondensed_Black.ttf]]
   )
+  LSM:Register(
+    "font",
+    p1xelText .. "Combat" .. COLOR_RESET,
+    [[Interface\Addons\p1xelUI\Media\Fonts\Prototype.ttf]]
+  )
 
   -- StatusBars
   LSM:Register(
