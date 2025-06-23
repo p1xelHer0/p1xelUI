@@ -10,3 +10,6 @@ The `CallBackHandler-1.0` license can also be found here in the repository [Call
 
 ## https://www.wowace.com/projects/libstub
 The `LibStub` license can also be found here in the repository [LibStub LICENSE](./LibStub/LICENSE)
+
+## https://www.curseforge.com/wow/addons/utf8
+The UTF8 license is included in the [`utf8.lua` file](./UTF8/utf8.lua)

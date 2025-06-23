@@ -1,8 +1,8 @@
 local _, p1xelUI = ...
 local M = p1xelUI:CreateModule("ActionBars")
 
-local eventHandler = CreateFrame("Frame", nil, UIParent)
-eventHandler:SetScript("OnEvent", function(self, event, ...)
+local moduleEventHandler = CreateFrame("Frame", nil, UIParent)
+moduleEventHandler:SetScript("OnEvent", function(self, event, ...)
   return self[event](self, ...)
 end)
 
